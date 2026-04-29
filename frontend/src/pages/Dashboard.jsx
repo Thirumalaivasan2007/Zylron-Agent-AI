@@ -443,46 +443,6 @@ const Dashboard = () => {
         setTimeout(() => setCopiedIndex(null), 2000);
     };
 
-    // 🔊 ZYLRON TTS — speaks AI responses aloud
-    const speakText = (text, index) => {
-        if (!window.speechSynthesis) return;
-        window.speechSynthesis.cancel(); // stop any current speech
-
-        // Strip markdown before speaking
-        const clean = text
-            .replace(/#{1,6}\s/g, '')
-            .replace(/\*\*(.*?)\*\*/g, '$1')
-            .replace(/\*(.*?)\*/g, '$1')
-            .replace(/`{1,3}[^`]*`{1,3}/g, '')
-            .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-            .replace(/[-*+]\s/g, '')
-            .replace(/>\s/g, '')
-            .replace(/\n+/g, '. ')
-            .trim();
-
-        const utterance = new SpeechSynthesisUtterance(clean);
-        utterance.rate = 1.05;
-        utterance.pitch = 1.0;
-        utterance.volume = 1.0;
-
-        // Pick best English voice (prefer Indian English)
-        const voices = window.speechSynthesis.getVoices();
-        const preferred = voices.find(v => v.lang === 'en-IN')
-            || voices.find(v => v.lang.startsWith('en') && v.name.includes('Google'))
-            || voices.find(v => v.lang.startsWith('en'));
-        if (preferred) utterance.voice = preferred;
-
-        utterance.onstart = () => setIsSpeakingIndex(index);
-        utterance.onend = () => setIsSpeakingIndex(null);
-        utterance.onerror = () => setIsSpeakingIndex(null);
-
-        window.speechSynthesis.speak(utterance);
-    };
-
-    const stopSpeaking = () => {
-        window.speechSynthesis?.cancel();
-        setIsSpeakingIndex(null);
-    };
 
     const handleFeedback = async (messageIdx, type) => {
         if (!user || !currentSessionId) return;
@@ -668,14 +628,14 @@ const Dashboard = () => {
     };
 
     // TTS Logic
-    const stopSpeech = () => {
+    const stopSpeaking = () => {
         window.speechSynthesis.cancel();
         setIsSpeakingIndex(null);
     };
 
     const speakText = (text, index) => {
         if (isSpeakingIndex === index) {
-            stopSpeech();
+            stopSpeaking();
             return;
         }
 
