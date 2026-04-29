@@ -88,6 +88,15 @@ Is there anything specific you'd like to know?`;
     return null; // No hardcoded response → let AI handle it
 }
 
+// 🧬 DIAGNOSTIC: List available models for this Key
+router.get('/list', async (req, res) => {
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`);
+        const data = await response.json();
+        res.json(data);
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 async function neuralCall(payload) {
     const models = [
         "gemini-1.5-flash", 
@@ -100,7 +109,7 @@ async function neuralCall(payload) {
         for (let attempt = 1; attempt <= 2; attempt++) {
             try {
                 console.log(`📡 Neural Link: Attempting ${modelId} (try ${attempt})...`);
-                const url = `https://generativelanguage.googleapis.com/v1/models/${modelId}:generateContent?key=${API_KEY}`;
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${API_KEY}`;
 
                 const response = await fetch(url, {
                     method: 'POST',
