@@ -31,11 +31,10 @@ async function reviewCommit(commitData) {
 
     // ✅ Multi-model fallback — never returns "unavailable"
     const models = [
-        'gemini-2.5-flash-lite',
-        'gemini-2.0-flash-lite',
-        'gemini-2.0-flash-lite-001',
         'gemini-2.0-flash',
-        'gemini-2.5-flash',
+        'gemini-1.5-flash',
+        'gemini-1.5-flash-8b',
+        'gemini-1.5-pro',
     ];
 
     for (const modelId of models) {

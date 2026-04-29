@@ -90,10 +90,10 @@ Is there anything specific you'd like to know?`;
 
 async function neuralCall(payload) {
     const models = [
-        "gemini-2.5-flash",      // ✅ PRIMARY
-        "gemini-2.5-flash-lite", // ✅ FALLBACK — separate quota pool
-        "gemini-2.0-flash",      // fallback
-        "gemini-2.0-flash-001",  // fallback
+        "gemini-2.0-flash",          // ✅ LATEST STABLE
+        "gemini-1.5-flash",          // ✅ HIGH SPEED FALLBACK
+        "gemini-1.5-flash-8b",       // ✅ LIGHTWEIGHT FALLBACK
+        "gemini-1.5-pro",            // ✅ POWERFUL FALLBACK
     ];
     let lastError = null;
 
