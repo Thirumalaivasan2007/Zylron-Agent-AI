@@ -52,13 +52,9 @@ router.post('/ask', async (req, res) => {
                                 }
                             },
                             {
-                                text: `You are Zylron AI with Omni-Vision — you can see the user's screen.
-                                The user asks: "${question}"
+                                text: `INSTRUCTION: You are Zylron AI with Omni-Vision — you can see the user's screen. Look at the screen carefully and give a precise, helpful answer. If you see code with a bug, point to the exact line. If you see an error message, explain the fix. Be concise and direct. No filler phrases.
                                 
-                                Look at the screen carefully and give a precise, helpful answer.
-                                If you see code with a bug, point to the exact line.
-                                If you see an error message, explain the fix.
-                                Be concise and direct. No filler phrases.`
+                                QUESTION: "${question}"`
                             }
                         ]
                     }]

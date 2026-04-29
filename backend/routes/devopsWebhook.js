@@ -41,7 +41,12 @@ async function reviewCommit(commitData) {
             const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/${modelId}:generateContent?key=${API_KEY}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }] })
+                body: JSON.stringify({ 
+                    contents: [{ 
+                        role: 'user', 
+                        parts: [{ text: prompt + "\n\nReview this commit: " + JSON.stringify(commitData) }] 
+                    }] 
+                })
             });
             if (!res.ok) {
                 console.warn(`🔄 DevOps: ${modelId} failed (${res.status}), trying next...`);

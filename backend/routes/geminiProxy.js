@@ -233,8 +233,10 @@ ${screenPart ? '\nYou can see the user\'s screen — use that context for precis
 Chat naturally and helpfully. NO labels like 'NEURAL ARCHITECT'.`;
 
             const chatData = await neuralCall({
-                contents: [{ role: "user", parts: chatParts }],
-                systemInstruction: { parts: [{ text: personaSysText }] }
+                contents: [{ 
+                    role: "user", 
+                    parts: [{ text: personaSysText + "\n\nUser Message: " + (screenPart ? prompt + pushStatus : prompt) }] 
+                }]
             });
             const rawChatText = chatData.candidates[0].content.parts[0].text;
             const chatText = applyIdentityShield(rawChatText, prompt); // 🛡️
@@ -258,8 +260,10 @@ Chat naturally and helpfully. NO labels like 'NEURAL ARCHITECT'.`;
         Use an ultra-premium design style.`;
         
         const archData = await neuralCall({
-            contents: [{ role: "user", parts: [{ text: prompt }] }],
-            systemInstruction: { parts: [{ text: architectInstruction }] }
+            contents: [{ 
+                role: "user", 
+                parts: [{ text: architectInstruction + "\n\nUser Requirement: " + prompt }] 
+            }]
         });
         const blueprint = archData.candidates[0].content.parts[0].text;
         console.log("📐 Architect Blueprint Ready.");
@@ -281,8 +285,9 @@ Chat naturally and helpfully. NO labels like 'NEURAL ARCHITECT'.`;
         BLUEPRINT: ${blueprint}`;
 
         const coderPayload = {
-            contents: [...history, { role: "user", parts: [{ text: `Implement this: ${blueprint}` }] }],
-            systemInstruction: { parts: [{ text: coderInstruction }] },
+            contents: [
+                { role: "user", parts: [{ text: coderInstruction + "\n\nImplement this blueprint: " + blueprint }] }
+            ],
             tools: [{ functionDeclarations: toolDefinitions }]
         };
 
@@ -376,8 +381,7 @@ Chat naturally and helpfully. NO labels like 'NEURAL ARCHITECT'.`;
         TOOL OUTPUTS: ${JSON.stringify(toolResponses)}`;
 
         const qaData = await neuralCall({
-            contents: [{ role: "user", parts: [{ text: "Review the swarm output." }] }],
-            systemInstruction: { parts: [{ text: qaInstruction }] }
+            contents: [{ role: "user", parts: [{ text: qaInstruction + "\n\nReview the swarm output." }] }]
         });
         const qaResult = qaData.candidates[0].content.parts[0].text;
         console.log("🔍 QA Result:", qaResult.substring(0, 100));
@@ -389,8 +393,7 @@ Chat naturally and helpfully. NO labels like 'NEURAL ARCHITECT'.`;
             Fix it immediately using the writeFile tool. File must be self-contained HTML.
             The main file should be '${customHtmlFile}'.`;
             const fixData = await neuralCall({
-                contents: [{ role: "user", parts: [{ text: `Fix: ${qaResult}` }] }],
-                systemInstruction: { parts: [{ text: fixInstruction }] },
+                contents: [{ role: "user", parts: [{ text: fixInstruction + "\n\nFix: " + qaResult }] }],
                 tools: [{ functionDeclarations: toolDefinitions }]
             });
             const fixCalls = fixData.candidates[0].content.parts.filter(p => p.functionCall);
