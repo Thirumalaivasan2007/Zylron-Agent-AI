@@ -1162,7 +1162,7 @@ const Dashboard = () => {
             }
             
             // Full Agentic Proxy Call
-            const proxyUrl = 'http://localhost:5001/api/gemini/proxy';
+            const proxyUrl = 'https://zylron-agent-ai.onrender.com/api/gemini/proxy';
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 120000); // 2-min limit
 
