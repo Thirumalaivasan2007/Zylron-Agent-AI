@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { auth } from '../config/firebase';
 
-const API_URL = import.meta.env.MODE === 'development' 
+const IS_DEV = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_URL = IS_DEV
     ? 'http://localhost:5001/api/gemini/proxy' 
     : 'https://zylron-agent-ai.onrender.com/api/gemini/proxy';
 
