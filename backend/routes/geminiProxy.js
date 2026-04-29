@@ -90,19 +90,16 @@ Is there anything specific you'd like to know?`;
 
 async function neuralCall(payload) {
     const models = [
-        "gemini-2.0-flash",          // ✅ LATEST STABLE
-        "gemini-1.5-flash",          // ✅ HIGH SPEED FALLBACK
-        "gemini-1.5-flash-8b",       // ✅ LIGHTWEIGHT FALLBACK
-        "gemini-1.5-pro",            // ✅ POWERFUL FALLBACK
+        "gemini-1.5-flash", 
+        "gemini-1.5-pro",
+        "gemini-pro"
     ];
     let lastError = null;
 
     for (const modelId of models) {
-        // Try each model up to 2 times (once for 503 server overload)
         for (let attempt = 1; attempt <= 2; attempt++) {
             try {
-                console.log(`📡 Neural Link: Attempting ${modelId} (try ${attempt})...`);
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${API_KEY}`;
+                const url = `https://generativelanguage.googleapis.com/v1/models/${modelId}:generateContent?key=${API_KEY}`;
 
                 const response = await fetch(url, {
                     method: 'POST',

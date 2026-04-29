@@ -31,15 +31,14 @@ async function reviewCommit(commitData) {
 
     // ✅ Multi-model fallback — never returns "unavailable"
     const models = [
-        'gemini-2.0-flash',
         'gemini-1.5-flash',
-        'gemini-1.5-flash-8b',
         'gemini-1.5-pro',
+        'gemini-pro'
     ];
 
     for (const modelId of models) {
         try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${API_KEY}`, {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/${modelId}:generateContent?key=${API_KEY}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }] })
