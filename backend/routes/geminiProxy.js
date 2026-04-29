@@ -8,6 +8,9 @@ const ChatHistory = require('../models/ChatHistory');
 
 const API_KEY = (process.env.GEMINI_API_KEY || "").trim();
 const OMNI_SNAPSHOT_PATH = path.join(__dirname, '..', '..', 'desktop', 'omni_snapshot.jpg');
+const BASE_URL = process.env.NODE_ENV === 'production' 
+    ? 'https://zylron-agent-ai.onrender.com' 
+    : 'http://localhost:5001';
 
 // 🚀 ULTRA-RESILIENT NEURAL DISPATCHER
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
@@ -316,7 +319,7 @@ Chat naturally and helpfully. NO labels like 'NEURAL ARCHITECT'.`;
             if (htmlBlocks) {
                 const content = htmlBlocks[0].replace(/```html\n/, "").replace(/\n```/, "");
                 await toolHandlers.writeFile({ filename: 'index.html', content });
-                previewUrl = `http://localhost:5001/workspace/index.html?t=${Date.now()}`;
+                previewUrl = `${BASE_URL}/workspace/index.html?t=${Date.now()}`;
                 agentUsed = true;
             }
             if (cssBlocks) {
@@ -329,7 +332,7 @@ Chat naturally and helpfully. NO labels like 'NEURAL ARCHITECT'.`;
             }
         } else if (savedFiles.includes('index.html')) {
             // Set preview to index.html if it was explicitly created
-            previewUrl = `http://localhost:5001/workspace/index.html?t=${Date.now()}`;
+            previewUrl = `${BASE_URL}/workspace/index.html?t=${Date.now()}`;
         }
 
         if (toolCalls.length > 0) {
@@ -337,7 +340,7 @@ Chat naturally and helpfully. NO labels like 'NEURAL ARCHITECT'.`;
             for (const call of toolCalls) {
                 const fc = call.functionCall;
                 if (fc.name === 'writeFile') {
-                    const currentUrl = `http://localhost:5001/workspace/${fc.args.filename}?t=${Date.now()}`;
+                    const currentUrl = `${BASE_URL}/workspace/${fc.args.filename}?t=${Date.now()}`;
                     // Always prefer the user's custom filename, then any .html file, then fallback
                     if (!previewUrl || fc.args.filename === customHtmlFile || fc.args.filename.endsWith('.html')) {
                         previewUrl = currentUrl;
@@ -399,7 +402,7 @@ Chat naturally and helpfully. NO labels like 'NEURAL ARCHITECT'.`;
                 if (fc.name === 'writeFile' && toolHandlers[fc.name]) {
                     await toolHandlers[fc.name](fc.args);
                     if (fc.args.filename.endsWith('.html')) {
-                        previewUrl = `http://localhost:5001/workspace/${fc.args.filename}?t=${Date.now()}`;
+                        previewUrl = `${BASE_URL}/workspace/${fc.args.filename}?t=${Date.now()}`;
                     }
                 }
             }
