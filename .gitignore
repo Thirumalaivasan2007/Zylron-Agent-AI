@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment variables — NEVER commit these!
+.env
+.env.local
+.env.production
+backend/.env
+
+# Build output
+dist/
+build/
+frontend/dist/
+
+# Desktop build
+desktop/out/
+desktop/dist/
+
+# Electron / Omni-Vision
+desktop/omni_snapshot.jpg
+
+# Agent workspace generated files (optional — keep or ignore)
+agent_workspace/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+*.suo
+*.user

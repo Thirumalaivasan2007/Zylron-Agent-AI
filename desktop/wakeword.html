@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Zylron Wake Word Engine</title>
+<style>
+  body { background: #0f172a; color: #06b6d4; font-family: monospace; padding: 10px; font-size: 11px; }
+  #log { max-height: 200px; overflow-y: auto; }
+  .ok { color: #22c55e; }
+  .warn { color: #f59e0b; }
+  .wake { color: #f43f5e; font-weight: bold; font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="log"></div>
+<script>
+// 🎙️ ZYLRON WAKE WORD ENGINE
+const WAKE_PHRASES = ['hey zylron', 'zylron', 'hi zylron', 'ok zylron', 'ey zylron', 'a zylron'];
+const log = document.getElementById('log');
+
+function addLog(msg, cls='') {
+    const d = document.createElement('div');
+    d.className = cls;
+    d.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+    log.prepend(d);
+}
+
+function startListening() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+        addLog('❌ SpeechRecognition API not available!', 'warn');
+        return;
+    }
+
+    const recognition = new SR();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-IN';
+    recognition.maxAlternatives = 5;
+
+    recognition.onstart = () => {
+        addLog('✅ Listening... say "Hey Zylron"', 'ok');
+    };
+
+    recognition.onresult = (event) => {
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            // Check all alternatives
+            for (let a = 0; a < event.results[i].length; a++) {
+                const transcript = event.results[i][a].transcript.toLowerCase().trim();
+                addLog('Heard: ' + transcript);
+
+                const isWake = WAKE_PHRASES.some(p => transcript.includes(p));
+                if (isWake) {
+                    addLog('🚀 WAKE WORD DETECTED: ' + transcript, 'wake');
+                    if (window.electronAPI && window.electronAPI.wakeWordDetected) {
+                        window.electronAPI.wakeWordDetected(transcript);
+                    }
+                }
+            }
+        }
+    };
+
+    recognition.onerror = (e) => {
+        addLog('Error: ' + e.error, 'warn');
+        if (e.error === 'not-allowed') {
+            addLog('❌ Mic permission DENIED — cannot use wake word', 'warn');
+        } else if (e.error !== 'aborted') {
+            setTimeout(startListening, 2000);
+        }
+    };
+
+    recognition.onend = () => {
+        addLog('Restarting listener...');
+        setTimeout(() => {
+            try { recognition.start(); } catch(e) { setTimeout(startListening, 1000); }
+        }, 500);
+    };
+
+    try {
+        recognition.start();
+    } catch(e) {
+        addLog('Start error: ' + e.message, 'warn');
+        setTimeout(startListening, 2000);
+    }
+}
+
+addLog('🎙️ Zylron Wake Word Engine starting...');
+startListening();
+</script>
+</body>
+</html>
