@@ -2270,7 +2270,7 @@ const Dashboard = () => {
                         {/* Download Desktop App Button */}
                         <div className="mt-4 px-2">
                             <a 
-                                href="https://github.com/Thirumalaivasan2007/Zylron-Agent-AI/releases/download/v3.0.0/Zylron%20AI%20Setup%203.0.0.exe" 
+                                href="https://github.com/Thirumalaivasan2007/Zylron-Agent-AI/releases/latest/download/Zylron%20AI%20Setup%203.0.0.exe" 
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-cyan-400 bg-cyan-400/5 border border-cyan-400/20 hover:bg-cyan-400/10 transition-all group"
