@@ -208,16 +208,17 @@ function openJarvisWindow() {
 // ─── 🎙️ WAKE WORD ENGINE ───────────────────────────────
 function startWakeWordEngine() {
     wakeWordWindow = new BrowserWindow({
-        width: 1,
-        height: 1,
-        show: false,            // 👻 GHOST MODE: Hidden background listener
+        width: 0,
+        height: 0,
+        show: false,
         skipTaskbar: true,
         frame: false,
-        title: '🎙️ Zylron Background Listener',
+        transparent: true,
+        hasShadow: false,
+        type: 'toolbar', // Prevents showing in Alt-Tab
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
-            webSecurity: false,
             backgroundThrottling: false,
             preload: path.join(__dirname, 'preload.js')
         }
