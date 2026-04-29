@@ -18,8 +18,8 @@ const allowedOrigins = [
   'http://localhost:3001',
   'http://localhost:3002',
   'http://localhost:5173',
-  'https://zylron-ai-pro.vercel.app',        // ✅ Vercel production
-  'https://zylron-3.vercel.app',              // ✅ Alt Vercel name
+  'https://zylron-agent-ai.vercel.app',      // ✅ Vercel Production
+  'https://zylron-agent-ai.onrender.com',    // ✅ Backend itself
 ];
 
 const corsOptions = {
