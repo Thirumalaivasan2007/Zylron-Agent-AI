@@ -2268,19 +2268,6 @@ const Dashboard = () => {
                             ))}
                         </div>
 
-                        {/* Download Desktop App Button */}
-                        <div className="mt-4 px-2">
-                            <a 
-                                href="https://github.com/Thirumalaivasan2007/Zylron-Agent-AI/releases/download/v3.0.0/Zylron.AI.Setup.3.0.0.exe" 
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-cyan-400 bg-cyan-400/5 border border-cyan-400/20 hover:bg-cyan-400/10 transition-all group"
-                                title="Download Zylron JARVIS for Windows"
-                            >
-                                <Monitor className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                                <span className="text-sm font-medium">Download Desktop</span>
-                            </a>
-                        </div>
                     </div>
                 </div>
 
