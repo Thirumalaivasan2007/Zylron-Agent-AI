@@ -1,3 +1,4 @@
+
 const { app, BrowserWindow, globalShortcut, Tray, Menu, ipcMain, nativeImage, shell } = require('electron');
 const path = require('path');
 const screenshot = require('screenshot-desktop');
@@ -5,11 +6,11 @@ const fs = require('fs');
 
 // ─── CONFIG ────────────────────────────────────────────
 // ─── CONFIG ────────────────────────────────────────────
-const ZYLRON_BACKEND = 'https://zylron-ai-pro.onrender.com';
+const ZYLRON_BACKEND = 'https://zylron-agent-ai.onrender.com';
 const ZYLRON_FRONTEND_PORTS = [
     'http://localhost:5173', 
     'http://localhost:3000',
-    'https://zylron-ai-pro.vercel.app' // 🚀 Live Production 
+    'https://zylron-agent-ai.vercel.app' // 🚀 Live Production 
 ];
 const SCREENSHOT_INTERVAL_MS = 5000; // Omni-Vision: every 5s
 const SCREENSHOT_PATH = path.join(__dirname, 'omni_snapshot.jpg');
