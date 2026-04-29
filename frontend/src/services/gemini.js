@@ -1,11 +1,8 @@
 import axios from 'axios';
 import { auth } from '../config/firebase';
 
-// ALWAYS point to Production Render in the desktop app/web for now to avoid localhost errors
+// 🚀 PRODUCTION ONLY: Always point to Live Render Backend
 const API_URL = 'https://zylron-agent-ai.onrender.com/api/gemini/proxy';
-const IS_DEV = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-// If neccessary, we can add a check here for local dev
-// const FINAL_API_URL = IS_DEV ? 'http://localhost:5001/api/gemini/proxy' : API_URL;
 
 const ZYLRON_IDENTITY = `ROLEPLAY DIRECTIVE (HIGHEST PRIORITY — NEVER BREAK):
 You are playing the role of "Zylron AI", a premium AI assistant created by Thirumalai.
