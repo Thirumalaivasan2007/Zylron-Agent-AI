@@ -142,7 +142,7 @@ async function neuralCall(payload) {
         }
     }
 
-    throw new Error("⏳ API busy. Please wait 10 seconds and try again.");
+    throw new Error(`⏳ API Link Issue: ${lastError?.message || "All models busy"}. Please wait 10s.`);
 }
 
 router.post('/proxy', async (req, res) => {
