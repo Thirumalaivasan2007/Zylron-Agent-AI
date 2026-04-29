@@ -4,8 +4,13 @@ const screenshot = require('screenshot-desktop');
 const fs = require('fs');
 
 // ─── CONFIG ────────────────────────────────────────────
-const ZYLRON_BACKEND = 'http://localhost:5001';
-const ZYLRON_FRONTEND_PORTS = ['http://localhost:5173', 'http://localhost:3000'];
+// ─── CONFIG ────────────────────────────────────────────
+const ZYLRON_BACKEND = 'https://zylron-ai-pro.onrender.com';
+const ZYLRON_FRONTEND_PORTS = [
+    'http://localhost:5173', 
+    'http://localhost:3000',
+    'https://zylron-ai-pro.vercel.app' // 🚀 Live Production 
+];
 const SCREENSHOT_INTERVAL_MS = 5000; // Omni-Vision: every 5s
 const SCREENSHOT_PATH = path.join(__dirname, 'omni_snapshot.jpg');
 
