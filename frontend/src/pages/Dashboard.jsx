@@ -639,7 +639,7 @@ const Dashboard = () => {
             return;
         }
 
-        stopSpeech();
+        stopSpeaking();
 
         // Strip markdown and code blocks for clean speech
         const cleanText = text
