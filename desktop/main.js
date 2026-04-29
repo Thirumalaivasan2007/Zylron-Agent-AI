@@ -208,15 +208,12 @@ function openJarvisWindow() {
 // ─── 🎙️ WAKE WORD ENGINE ───────────────────────────────
 function startWakeWordEngine() {
     wakeWordWindow = new BrowserWindow({
-        width: 320,
-        height: 220,
-        x: 20,
-        y: 20,
-        show: true,            // 👁️ VISIBLE for debugging — see what mic hears
-        skipTaskbar: false,
-        frame: true,
-        title: '🎙️ Zylron Wake Word — Debug',
-        alwaysOnTop: true,     // Always on top so boss can see it
+        width: 1,
+        height: 1,
+        show: false,            // 👻 GHOST MODE: Hidden background listener
+        skipTaskbar: true,
+        frame: false,
+        title: '🎙️ Zylron Background Listener',
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
