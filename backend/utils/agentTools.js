@@ -89,10 +89,10 @@ const toolHandlers = {
 
     writeFile: async ({ filename, content }) => {
         try {
-            const workspaceDir = 'C:/zylron 3.0/agent_workspace';
+            const workspaceDir = path.join(__dirname, '..', '..', 'agent_workspace');
             if (!fs.existsSync(workspaceDir)) fs.mkdirSync(workspaceDir, { recursive: true });
             fs.writeFileSync(path.join(workspaceDir, filename), content);
-            return `✅ Success: File '${filename}' created. View at http://localhost:5001/workspace/${filename}`;
+            return `✅ Success: File '${filename}' created.`;
         } catch (error) { return `❌ Write failed: ${error.message}`; }
     },
 
@@ -100,7 +100,7 @@ const toolHandlers = {
         return new Promise((resolve) => {
             const forbidden = ['rm ', 'format ', 'del '];
             if (forbidden.some(f => command.includes(f))) return resolve("❌ Blocked.");
-            exec(command, { cwd: 'C:/zylron 3.0/agent_workspace' }, (error, stdout, stderr) => {
+            exec(command, { cwd: path.join(__dirname, '..', '..', 'agent_workspace') }, (error, stdout, stderr) => {
                 if (error) resolve(`❌ Error: ${stderr || error.message}`);
                 resolve(stdout || "✅ Done.");
             });
@@ -109,7 +109,7 @@ const toolHandlers = {
 
     pushToGitHub: async ({ repoUrl, commitMessage, files }) => {
         return new Promise((resolve) => {
-            const workspaceDir = 'C:/zylron 3.0/agent_workspace';
+            const workspaceDir = path.join(__dirname, '..', '..', 'agent_workspace');
             const TOKEN = process.env.GITHUB_TOKEN || "";
             
             // 🛡️ SECURITY & OPTIMIZATION: Create gitignore before push
@@ -147,11 +147,11 @@ const toolHandlers = {
             await page.goto(url, { waitUntil: 'networkidle2' });
             
             if (action === 'screenshot') {
-                const workspaceDir = 'C:/zylron 3.0/agent_workspace';
+                const workspaceDir = path.join(__dirname, '..', '..', 'agent_workspace');
                 const filename = `screenshot_${Date.now()}.png`;
                 await page.screenshot({ path: path.join(workspaceDir, filename), fullPage: true });
                 await browser.close();
-                return `✅ Screenshot saved: ${filename}. View at http://localhost:5001/workspace/${filename}`;
+                return `✅ Screenshot saved: ${filename}.`;
             } else {
                 const text = await page.evaluate(() => document.body.innerText.substring(0, 2000));
                 const title = await page.title();
