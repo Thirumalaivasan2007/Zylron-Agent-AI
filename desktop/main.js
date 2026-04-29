@@ -30,6 +30,23 @@ app.commandLine.appendSwitch('enable-speech-input');
 app.commandLine.appendSwitch('enable-experimental-web-platform-features');
 app.commandLine.appendSwitch('disable-features', 'SpeechSynthesis');
 
+// ─── SINGLE INSTANCE LOCK ──────────────────────────────
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+    app.quit();
+} else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        // If user tries to run a second instance, focus our window.
+        if (jarvisWindow) {
+            if (jarvisWindow.isMinimized()) jarvisWindow.restore();
+            jarvisWindow.show();
+            jarvisWindow.focus();
+        } else {
+            openJarvisWindow();
+        }
+    });
+}
+
 // ─── APP READY ─────────────────────────────────────────
 app.whenReady().then(() => {
     // ✅ Auto-grant microphone permission — required for "Hey Zylron" wake word
@@ -56,6 +73,7 @@ app.whenReady().then(() => {
     startOmniVision();
     startWakeWordEngine();       // 🎙️ Start background wake word listener
     setWindowsStartup();         // 🔄 Auto-start with Windows
+    openJarvisWindow();          // 🚀 OPEN IMMEDIATELY ON STARTUP (Boss request)
     console.log('🤖 Zylron JARVIS: Online. Press Ctrl+Shift+Z or say "Hey Zylron"');
 });
 
