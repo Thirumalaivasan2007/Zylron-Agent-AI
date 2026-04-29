@@ -1,7 +1,8 @@
 {
   "name": "zylron-desktop",
   "version": "3.0.0",
-  "description": "Zylron AI — Always-On Desktop JARVIS",
+  "author": "Thirumalaivasan",
+  "description": "Zylron AI 3.0 — The Ultimate JARVIS-Class Desktop Ecosystem",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
