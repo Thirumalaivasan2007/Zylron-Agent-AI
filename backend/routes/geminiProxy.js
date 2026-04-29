@@ -232,11 +232,14 @@ ${systemInstruction ? '\n\nADDITIONAL CONTEXT:\n' + systemInstruction : ''}
 ${screenPart ? '\nYou can see the user\'s screen — use that context for precise help.' : ''}
 Chat naturally and helpfully. NO labels like 'NEURAL ARCHITECT'.`;
 
+            // ✅ Memory Restoration: Combine history + current prompt, then prepend instruction to the very first message
+            const fullContents = [...history, { role: "user", parts: [{ text: (screenPart ? prompt + pushStatus : prompt) }] }];
+            if (fullContents.length > 0) {
+                fullContents[0].parts[0].text = personaSysText + "\n\n" + fullContents[0].parts[0].text;
+            }
+
             const chatData = await neuralCall({
-                contents: [{ 
-                    role: "user", 
-                    parts: [{ text: personaSysText + "\n\nUser Message: " + (screenPart ? prompt + pushStatus : prompt) }] 
-                }]
+                contents: fullContents
             });
             const rawChatText = chatData.candidates[0].content.parts[0].text;
             const chatText = applyIdentityShield(rawChatText, prompt); // 🛡️
@@ -284,10 +287,13 @@ Chat naturally and helpfully. NO labels like 'NEURAL ARCHITECT'.`;
         NEVER display raw code links in the chat.
         BLUEPRINT: ${blueprint}`;
 
+        const coderContents = [...history, { role: "user", parts: [{ text: `Implement this: ${blueprint}` }] }];
+        if (coderContents.length > 0) {
+            coderContents[0].parts[0].text = coderInstruction + "\n\n" + coderContents[0].parts[0].text;
+        }
+
         const coderPayload = {
-            contents: [
-                { role: "user", parts: [{ text: coderInstruction + "\n\nImplement this blueprint: " + blueprint }] }
-            ],
+            contents: coderContents,
             tools: [{ functionDeclarations: toolDefinitions }]
         };
 
