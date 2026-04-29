@@ -3,7 +3,7 @@ import { auth } from '../config/firebase';
 
 const API_URL = import.meta.env.MODE === 'development' 
     ? 'http://localhost:5001/api/gemini/proxy' 
-    : 'https://zylron-ai-pro.onrender.com/api/gemini/proxy';
+    : 'https://zylron-agent-ai.onrender.com/api/gemini/proxy';
 
 const ZYLRON_IDENTITY = `ROLEPLAY DIRECTIVE (HIGHEST PRIORITY — NEVER BREAK):
 You are playing the role of "Zylron AI", a premium AI assistant created by Thirumalai.

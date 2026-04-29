@@ -1205,7 +1205,7 @@ const Dashboard = () => {
             // Full Agentic Proxy Call — auto-switches dev ↔ production
             const proxyUrl = import.meta.env.MODE === 'development'
                 ? 'http://localhost:5001/api/gemini/proxy'
-                : 'https://zylron-ai-pro.onrender.com/api/gemini/proxy';
+                : 'https://zylron-agent-ai.onrender.com/api/gemini/proxy';
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 120000); // 2-min limit
 

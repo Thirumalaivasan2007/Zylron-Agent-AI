@@ -49,6 +49,18 @@ app.use('/workspace', (req, res, next) => {
     next();
 }, express.static(path.join(__dirname, '..', 'agent_workspace')));
 
+// 🌐 ROOT HEALTH CHECK
+app.get('/', (req, res) => {
+  res.send(`
+    <body style="background:#0f172a;color:#06b6d4;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;flex-direction:column;gap:12px">
+      <div style="font-size:3rem">🚀</div>
+      <h1 style="margin:0">Zylron Neural Link: ONLINE</h1>
+      <p style="color:#94a3b8">Agentic Backend is listening for instructions...</p>
+      <div style="color:#475569;font-size:0.8rem">v3.0.0 Stable Build</div>
+    </body>
+  `);
+});
+
 const devopsWebhook = require('./routes/devopsWebhook');
 const omniVision = require('./routes/omniVision');
 
