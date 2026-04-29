@@ -11,13 +11,18 @@ const CodePreviewModal = ({ isOpen, onClose, code: initialCode }) => {
 
     if (!isOpen) return null;
 
-    const srcDoc = `
+    // Smart Sandbox Logic: If the code is a full HTML document, use it as is.
+    // Otherwise, wrap it in our premium responsive boilerplate.
+    const isFullHtml = code.trim().toLowerCase().startsWith('<!doctype') || code.trim().toLowerCase().startsWith('<html');
+    const isIframe = code.trim().toLowerCase().startsWith('<iframe');
+
+    const srcDoc = isFullHtml || isIframe ? code : `
         <!DOCTYPE html>
         <html>
             <head>
                 <script src="https://cdn.tailwindcss.com"></script>
                 <style>
-                    body { font-family: sans-serif; background: #fff; color: #333; padding: 0; margin: 0; }
+                    body { font-family: sans-serif; background: #fff; color: #333; padding: 20px; margin: 0; }
                 </style>
             </head>
             <body>

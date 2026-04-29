@@ -386,7 +386,7 @@ const Dashboard = () => {
     // Feature D: Chat Statistics Modal
     const [showStatsModal, setShowStatsModal] = useState(false);
     // Feature E: Model Switcher
-    const [activeModel, setActiveModel] = useState(localStorage.getItem('zylron_model') || 'gemini-.5-flash');
+    const [activeModel, setActiveModel] = useState(localStorage.getItem('zylron_model') || 'gemini-1.5-flash');
     const [showModelMenu, setShowModelMenu] = useState(false);
     // Feature F: Follow-up Suggestions
     const [followUpSuggestions, setFollowUpSuggestions] = useState([]);
@@ -442,7 +442,6 @@ const Dashboard = () => {
         setCopiedIndex(index);
         setTimeout(() => setCopiedIndex(null), 2000);
     };
-
 
     const handleFeedback = async (messageIdx, type) => {
         if (!user || !currentSessionId) return;
@@ -628,18 +627,18 @@ const Dashboard = () => {
     };
 
     // TTS Logic
-    const stopSpeaking = () => {
+    const stopSpeech = () => {
         window.speechSynthesis.cancel();
         setIsSpeakingIndex(null);
     };
 
     const speakText = (text, index) => {
         if (isSpeakingIndex === index) {
-            stopSpeaking();
+            stopSpeech();
             return;
         }
 
-        stopSpeaking();
+        stopSpeech();
 
         // Strip markdown and code blocks for clean speech
         const cleanText = text
@@ -1162,10 +1161,8 @@ const Dashboard = () => {
                 urlContext = `\n\n[ZYLRON AUTOMATION: User shared these URLs: ${detectedUrls.join(', ')}. Analyze and reference them in your response.]\n`;
             }
             
-            // Full Agentic Proxy Call — auto-switches dev ↔ production
-            const proxyUrl = import.meta.env.MODE === 'development'
-                ? 'http://localhost:5001/api/gemini/proxy'
-                : 'https://zylron-agent-ai.onrender.com/api/gemini/proxy';
+            // Full Agentic Proxy Call
+            const proxyUrl = 'http://localhost:5001/api/gemini/proxy';
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 120000); // 2-min limit
 
@@ -1993,12 +1990,7 @@ const Dashboard = () => {
                                                                 <button type="button" onClick={() => copyToClipboard(msg.content, idx)} className={`flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-all text-[10px] font-bold uppercase tracking-wider ${copiedIndex === idx ? 'text-emerald-500 dark:text-cyan-400' : 'text-gray-400'}`}>
                                                                     {copiedIndex === idx ? <Check size={12} /> : <Copy size={12} />} {copiedIndex === idx ? 'Copied' : 'Copy'}
                                                                 </button>
-                                                                <button 
-                                                                    type="button" 
-                                                                    onClick={() => isSpeakingIndex === idx ? stopSpeaking() : speakText(msg.content, idx)} 
-                                                                    className={`p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-all ${isSpeakingIndex === idx ? 'text-emerald-500 dark:text-cyan-400 animate-pulse' : 'text-gray-400'}`}
-                                                                    title={isSpeakingIndex === idx ? 'Stop Speaking' : 'Read Aloud'}
-                                                                >
+                                                                <button type="button" onClick={() => speakText(msg.content, idx)} className={`p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-all ${isSpeakingIndex === idx ? 'text-emerald-500 dark:text-cyan-400 animate-pulse' : 'text-gray-400'}`}>
                                                                     {isSpeakingIndex === idx ? <VolumeX size={14} /> : <Volume2 size={14} />}
                                                                 </button>
 
@@ -2275,6 +2267,19 @@ const Dashboard = () => {
                             ))}
                         </div>
 
+                        {/* Download Desktop App Button */}
+                        <div className="mt-4 px-2">
+                            <a 
+                                href="https://github.com/Thirumalaivasan2007/Zylron-Agent-AI/releases/latest" // Placeholder - Update with your Drive/GitHub link
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-cyan-400 bg-cyan-400/5 border border-cyan-400/20 hover:bg-cyan-400/10 transition-all group"
+                                title="Download Zylron JARVIS for Windows"
+                            >
+                                <Monitor className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                <span className="text-sm font-medium">Download Desktop</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
