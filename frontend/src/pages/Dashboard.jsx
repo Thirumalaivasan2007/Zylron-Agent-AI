@@ -2113,7 +2113,7 @@ const Dashboard = () => {
                             </div>
                         )}
                     </div>
-                </div>
+
 
                 {/* Glassmorphism Input Area */}
                 <div className="p-2 sm:p-4 bg-transparent relative z-10 w-full mb-1 sm:mb-2">
@@ -2341,9 +2341,7 @@ const Dashboard = () => {
                             </div>
                         </div>
                     )}
-
                 </div>
-            </div>
 
             {/* Zylron Sense HCI Component */}
             {isSenseActive && (
@@ -2554,6 +2552,8 @@ const Dashboard = () => {
                     </div>
                 </div>
             )}
+                </div>
+            </div>
         </React.Fragment>
     );
 };
