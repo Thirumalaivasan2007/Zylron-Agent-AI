@@ -3,7 +3,7 @@ import { db } from '../config/firebase';
 
 const CHATS_COLLECTION = 'chats';
 
-export const saveChatToCloud = async (userId, sessionId, chatTitle, messages) => {
+export const saveChatToCloud = async (userId, sessionId, chatTitle, messages, pinned = false) => {
     if (!userId) return;
     try {
         const chatRef = doc(db, CHATS_COLLECTION, sessionId);
@@ -13,6 +13,7 @@ export const saveChatToCloud = async (userId, sessionId, chatTitle, messages) =>
             sessionId,
             message: chatTitle,
             messages: messages,
+            pinned,
             updatedAt: serverTimestamp()
         };
 

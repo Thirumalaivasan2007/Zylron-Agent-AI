@@ -259,9 +259,12 @@ const Dashboard = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [isListening, setIsListening] = useState(false);
+    const [isSearchMode, setIsSearchMode] = useState(() => localStorage.getItem('zylron_search_mode') === 'true');
+    const [isFocusMode, setIsFocusMode] = useState(() => localStorage.getItem('zylron_focus_mode') === 'true');
+    const [pinnedMessages, setPinnedMessages] = useState(() => JSON.parse(localStorage.getItem('zylron_pinned_msgs') || '[]'));
+    const [persona, setPersona] = useState(() => localStorage.getItem('zylron_persona') || 'standard');
 
     // Phase 2.6: Ultimate Persona System
-    const [persona, setPersona] = useState('standard'); 
     const personaColors = {
         standard: { primary: 'emerald', secondary: 'cyan', glow: 'rgba(0, 255, 255, 0.4)' },
         code_master: { primary: 'blue', secondary: 'indigo', glow: 'rgba(59, 130, 246, 0.5)' },
@@ -295,7 +298,11 @@ const Dashboard = () => {
         localStorage.setItem('zylron_credits', credits);
         localStorage.setItem('zylron_credits_date', today);
         localStorage.setItem('zylron_xp', xp);
-    }, [credits, xp]);
+        localStorage.setItem('zylron_persona', persona);
+        localStorage.setItem('zylron_search_mode', isSearchMode);
+        localStorage.setItem('zylron_focus_mode', isFocusMode);
+        localStorage.setItem('zylron_pinned_msgs', JSON.stringify(pinnedMessages));
+    }, [credits, xp, persona, isSearchMode, isFocusMode, pinnedMessages]);
 
     // Midnight auto-reset: check every minute if day changed
     useEffect(() => {
@@ -923,7 +930,7 @@ const Dashboard = () => {
         });
 
         // Save to Firebase
-        await saveChatToCloud(user.uid, sessionId, chatTitle, updatedMessages);
+        await saveChatToCloud(user.uid, sessionId, chatTitle, updatedMessages, existingSession?.pinned || false);
     };
 
     const fetchHistory = async () => {
@@ -1396,11 +1403,18 @@ const Dashboard = () => {
         }
     };
 
-    const togglePinSession = (sessionId) => {
-        setHistory(prev => prev.map(chat => 
+    const togglePinSession = async (sessionId) => {
+        const session = history.find(s => s.sessionId === sessionId);
+        if (!session) return;
+
+        const updatedHistory = history.map(chat => 
             chat.sessionId === sessionId ? { ...chat, pinned: !chat.pinned } : chat
-        ));
-        setFeedbackToast("📌 Chat pinned status updated!");
+        );
+        setHistory(updatedHistory);
+        setFeedbackToast(session.pinned ? "📌 Chat unpinned!" : "📌 Chat pinned!");
+        
+        // Persist to cloud immediately
+        await saveChatToCloud(user.uid, sessionId, session.message, session.messages, !session.pinned);
         setTimeout(() => setFeedbackToast(null), 2000);
     };
 
@@ -1883,9 +1897,39 @@ const Dashboard = () => {
                         </div>
                     ) : (
                         /* Active Chat Log */
-                        <div className="space-y-6 pb-20">
-                            {messages.map((msg, idx) => (
-                                <div key={idx} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} ${msg.isSystem ? 'justify-center my-6' : ''}`}>
+                                    {/* Pinned Messages Tray (Top Placement) */}
+                                    {pinnedMessages.length > 0 && (
+                                        <div className="sticky top-0 bg-white/80 dark:bg-gray-900/80 border-b border-amber-200 dark:border-amber-500/30 backdrop-blur-md px-4 py-2.5 z-20 mb-4 rounded-2xl shadow-lg animate-in slide-in-from-top-4 duration-500">
+                                            <div className="flex items-center gap-3 flex-wrap">
+                                                <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                                                    <Pin size={14} className="shrink-0" />
+                                                    <span className="text-[10px] font-black uppercase tracking-widest">{pinnedMessages.length} Pinned</span>
+                                                </div>
+                                                <div className="flex gap-2 overflow-x-auto no-scrollbar max-w-[calc(100%-120px)]">
+                                                    {pinnedMessages.map((m, i) => (
+                                                        <button 
+                                                            key={i} 
+                                                            onClick={() => {
+                                                                const el = document.getElementById(`msg-${m.timestamp || i}`);
+                                                                if (el) {
+                                                                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                                    el.classList.add('ring-2', 'ring-amber-500', 'ring-offset-4', 'dark:ring-offset-black');
+                                                                    setTimeout(() => el.classList.remove('ring-2', 'ring-amber-500', 'ring-offset-4', 'dark:ring-offset-black'), 2000);
+                                                                }
+                                                            }}
+                                                            className="text-[10px] bg-gray-100 dark:bg-black/40 border border-gray-200 dark:border-white/5 hover:border-amber-500/50 px-3 py-1.5 rounded-xl text-gray-700 dark:text-gray-300 truncate max-w-[200px] transition-all active:scale-95"
+                                                        >
+                                                            {m.content?.slice(0, 45)}...
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                <button onClick={() => { setPinnedMessages([]); localStorage.removeItem('zylron_pinned_msgs'); }} className="ml-auto text-[10px] text-amber-600 hover:text-red-500 font-black uppercase tracking-widest transition-colors">Clear All</button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {messages.map((msg, idx) => (
+                                        <div key={idx} id={`msg-${msg.timestamp || idx}`} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} ${msg.isSystem ? 'justify-center my-6' : ''} transition-all duration-500`}>
                                     {msg.isSystem ? (
                                         <div className="flex items-center gap-4 w-full max-w-xl">
                                             <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent"></div>
@@ -2066,19 +2110,7 @@ const Dashboard = () => {
                                 </div>
                             )}
 
-                            {/* Pinned Messages Tray */}
-                            {pinnedMessages.length > 0 && (
-                                <div className="sticky bottom-0 bg-amber-50/90 dark:bg-amber-900/20 border-t border-amber-200 dark:border-amber-500/30 backdrop-blur-sm px-4 py-2 z-20">
-                                    <div className="flex items-center gap-2 flex-wrap">
-                                        <Pin size={12} className="text-amber-500 shrink-0" />
-                                        <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400">{pinnedMessages.length} Pinned</span>
-                                        {pinnedMessages.map((m, i) => (
-                                            <span key={i} className="text-[10px] bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 rounded-full text-amber-700 dark:text-amber-300 truncate max-w-[150px]">{m.content?.slice(0, 40)}...</span>
-                                        ))}
-                                        <button onClick={() => setPinnedMessages([])} className="ml-auto text-[10px] text-amber-500 hover:text-red-500 font-bold">Clear</button>
-                                    </div>
-                                </div>
-                            )}
+                            {/* Removed old pinned tray from bottom */}
                         </div>
                     )}
                 </div>
