@@ -1764,6 +1764,7 @@ const Dashboard = () => {
                             </div>
                         )}
                     </div>
+                </div>
                 
                 {/* Main Chat Area */}
                 <div {...getRootProps()} ref={scrollContainerRef} className="flex-1 overflow-y-auto p-2 sm:p-4 md:p-8 relative scroll-smooth">
@@ -2112,6 +2113,7 @@ const Dashboard = () => {
                             </div>
                         )}
                     </div>
+                </div>
 
                 {/* Glassmorphism Input Area */}
                 <div className="p-2 sm:p-4 bg-transparent relative z-10 w-full mb-1 sm:mb-2">
@@ -2341,6 +2343,7 @@ const Dashboard = () => {
                     )}
 
                 </div>
+            </div>
 
             {/* Zylron Sense HCI Component */}
             {isSenseActive && (
@@ -2551,9 +2554,6 @@ const Dashboard = () => {
                     </div>
                 </div>
             )}
-            </div>
-            </div>
-            </div>
         </React.Fragment>
     );
 };
