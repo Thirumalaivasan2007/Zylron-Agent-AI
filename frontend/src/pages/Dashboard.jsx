@@ -24,6 +24,7 @@ import {
     Zap,
     Code,
     Sparkles,
+    RefreshCw,
     Loader2,
     Download,
     Eye,
@@ -354,7 +355,7 @@ const Dashboard = () => {
     // Phase 3 States
     const [activeFiles, setActiveFiles] = useState([]); // Multiple PDFs
     const [isContinuousVoice, setIsContinuousVoice] = useState(false);
-    const [isSearchMode, setIsSearchMode] = useState(false);
+    // (isSearchMode already declared at top)
     const [isGeneratingImage, setIsGeneratingImage] = useState(false);
     const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
 
@@ -383,13 +384,11 @@ const Dashboard = () => {
     const webcamStreamRef = useRef(null);
 
     // NEW FEATURES
-    // Feature A: Focus Mode
-    const [isFocusMode, setIsFocusMode] = useState(false);
+    // (isFocusMode already declared at top)
     // Feature B: Chat Search
     const [showChatSearch, setShowChatSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    // Feature C: Pin Messages
-    const [pinnedMessages, setPinnedMessages] = useState([]);
+    // (pinnedMessages already declared at top)
     // Feature D: Chat Statistics Modal
     const [showStatsModal, setShowStatsModal] = useState(false);
     // Feature E: Model Switcher
@@ -1460,8 +1459,9 @@ const Dashboard = () => {
     };
 
     return (
-        <div 
-            className="flex h-screen overflow-hidden bg-white dark:bg-black text-black dark:text-white font-sans selection:bg-emerald-200 dark:selection:bg-cyan-500/30 transition-colors duration-300"
+        <React.Fragment>
+            <div 
+                className="flex h-screen overflow-hidden bg-white dark:bg-black text-black dark:text-white font-sans selection:bg-emerald-200 dark:selection:bg-cyan-500/30 transition-colors duration-300"
             style={{ 
                 '--persona-color': persona === 'standard' ? '#10b981' : persona === 'code_master' ? '#3b82f6' : '#f59e0b',
                 '--persona-glow': personaColors[persona].glow
@@ -1764,8 +1764,7 @@ const Dashboard = () => {
                             </div>
                         )}
                     </div>
-                </div>
-
+                
                 {/* Main Chat Area */}
                 <div {...getRootProps()} ref={scrollContainerRef} className="flex-1 overflow-y-auto p-2 sm:p-4 md:p-8 relative scroll-smooth">
                     <input {...getInputProps()} />
@@ -1896,224 +1895,223 @@ const Dashboard = () => {
                             </div>
                         </div>
                     ) : (
-                        /* Active Chat Log */
-                                    {/* Pinned Messages Tray (Top Placement) */}
-                                    {pinnedMessages.length > 0 && (
-                                        <div className="sticky top-0 bg-white/80 dark:bg-gray-900/80 border-b border-amber-200 dark:border-amber-500/30 backdrop-blur-md px-4 py-2.5 z-20 mb-4 rounded-2xl shadow-lg animate-in slide-in-from-top-4 duration-500">
-                                            <div className="flex items-center gap-3 flex-wrap">
-                                                <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                                                    <Pin size={14} className="shrink-0" />
-                                                    <span className="text-[10px] font-black uppercase tracking-widest">{pinnedMessages.length} Pinned</span>
-                                                </div>
-                                                <div className="flex gap-2 overflow-x-auto no-scrollbar max-w-[calc(100%-120px)]">
-                                                    {pinnedMessages.map((m, i) => (
-                                                        <button 
-                                                            key={i} 
-                                                            onClick={() => {
-                                                                const el = document.getElementById(`msg-${m.timestamp || i}`);
-                                                                if (el) {
-                                                                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                                                    el.classList.add('ring-2', 'ring-amber-500', 'ring-offset-4', 'dark:ring-offset-black');
-                                                                    setTimeout(() => el.classList.remove('ring-2', 'ring-amber-500', 'ring-offset-4', 'dark:ring-offset-black'), 2000);
-                                                                }
-                                                            }}
-                                                            className="text-[10px] bg-gray-100 dark:bg-black/40 border border-gray-200 dark:border-white/5 hover:border-amber-500/50 px-3 py-1.5 rounded-xl text-gray-700 dark:text-gray-300 truncate max-w-[200px] transition-all active:scale-95"
-                                                        >
-                                                            {m.content?.slice(0, 45)}...
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                                <button onClick={() => { setPinnedMessages([]); localStorage.removeItem('zylron_pinned_msgs'); }} className="ml-auto text-[10px] text-amber-600 hover:text-red-500 font-black uppercase tracking-widest transition-colors">Clear All</button>
+                            /* Active Chat Log */
+                            <div className="space-y-6 pb-20 relative">
+                                {/* Pinned Messages Tray (Top Placement) */}
+                                {pinnedMessages.length > 0 && (
+                                    <div className="sticky top-0 bg-white/80 dark:bg-gray-900/80 border-b border-amber-200 dark:border-amber-500/30 backdrop-blur-md px-4 py-2.5 z-20 mb-4 rounded-2xl shadow-lg animate-in slide-in-from-top-4 duration-500">
+                                        <div className="flex items-center gap-3 flex-wrap">
+                                            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                                                <Pin size={14} className="shrink-0" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest">{pinnedMessages.length} Pinned</span>
                                             </div>
-                                        </div>
-                                    )}
-
-                                    {messages.map((msg, idx) => (
-                                        <div key={idx} id={`msg-${msg.timestamp || idx}`} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} ${msg.isSystem ? 'justify-center my-6' : ''} transition-all duration-500`}>
-                                    {msg.isSystem ? (
-                                        <div className="flex items-center gap-4 w-full max-w-xl">
-                                            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent"></div>
-                                            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 dark:text-gray-500 whitespace-nowrap">
-                                                {msg.content.replace(/\*/g, '')}
-                                            </span>
-                                            <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent"></div>
-                                        </div>
-                                    ) : (
-                                        <div className={`w-full max-w-[95%] md:max-w-[85%] lg:max-w-5xl xl:max-w-6xl flex gap-4 ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                                            <div 
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 overflow-hidden ${msg.type === 'user' ? 'bg-emerald-100 dark:bg-black border border-emerald-300 dark:border-cyan-500/80 shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.4)]' : msg.type === 'error' ? 'bg-red-100 dark:bg-red-600' : 'bg-gray-100 dark:bg-black border border-gray-300 dark:border-cyan-500/30 shadow-sm dark:shadow-[0_0_10px_rgba(0,255,255,0.2)]'}`}
-                                                style={msg.type === 'ai' ? { borderColor: 'var(--persona-color)', boxShadow: `0 0 15px var(--persona-glow)` } : {}}
-                                            >
-                                                {msg.type === 'user' ? <User size={20} className="text-emerald-700 dark:text-cyan-400 dark:drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]" /> : <img src={ZylronLogo} alt="Zylron AI" className="h-8 w-8 rounded-full object-cover" />}
+                                            <div className="flex gap-2 overflow-x-auto no-scrollbar max-w-[calc(100%-120px)]">
+                                                {pinnedMessages.map((m, i) => (
+                                                    <button 
+                                                        key={i} 
+                                                        onClick={() => {
+                                                            const el = document.getElementById(`msg-${m.timestamp || i}`);
+                                                            if (el) {
+                                                                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                                el.classList.add('ring-2', 'ring-amber-500', 'ring-offset-4', 'dark:ring-offset-black');
+                                                                setTimeout(() => el.classList.remove('ring-2', 'ring-amber-500', 'ring-offset-4', 'dark:ring-offset-black'), 2000);
+                                                            }
+                                                        }}
+                                                        className="text-[10px] bg-gray-100 dark:bg-black/40 border border-gray-200 dark:border-white/5 hover:border-amber-500/50 px-3 py-1.5 rounded-xl text-gray-700 dark:text-gray-300 truncate max-w-[200px] transition-all active:scale-95"
+                                                    >
+                                                        {m.content?.slice(0, 45)}...
+                                                    </button>
+                                                ))}
                                             </div>
-
-                                            <div className={`px-5 py-4 rounded-3xl overflow-hidden transition-all duration-300 relative group/msg ${msg.type === 'user'
-                                                ? 'bg-emerald-50 dark:bg-black border border-gray-200 dark:border-cyan-500/60 text-black dark:text-white rounded-tr-sm shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.2)]'
-                                                : msg.type === 'error'
-                                                    ? 'bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/50 text-red-600 dark:text-red-400 shadow-sm dark:shadow-[0_0_15px_rgba(239,68,68,0.2)] rounded-tl-sm'
-                                                    : 'bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-black dark:text-white rounded-tl-sm shadow-sm dark:shadow-xl'
-                                                }`}
-                                                style={msg.type === 'ai' ? { 
-                                                    borderLeft: `4px solid var(--persona-color)`,
-                                                    background: theme === 'dark' 
-                                                        ? `linear-gradient(to bottom right, rgba(15, 23, 42, 0.8), rgba(0, 0, 0, 0.9))` 
-                                                        : `linear-gradient(to bottom right, rgba(255, 255, 255, 1), rgba(243, 244, 246, 0.5))`,
-                                                    boxShadow: `0 4px 20px -5px rgba(0, 0, 0, 0.1), 0 0 15px -3px var(--persona-glow)`
-                                                } : {}}
-                                            >
-                                                {msg.type === 'user' ? (
-                                                    <div className="flex flex-col gap-3">
-                                                        {msg.imageUrl && (
-                                                            <div className="relative max-w-sm rounded-xl overflow-hidden border border-gray-200 dark:border-cyan-500/30 shadow-md">
-                                                                <img src={msg.imageUrl} alt="Uploaded content" className="w-full h-auto object-cover max-h-[300px]" />
-                                                            </div>
-                                                        )}
-                                                        <p className="whitespace-pre-wrap leading-relaxed">
-                                                            {msg.content}
-                                                        </p>
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex flex-col gap-4">
-                                                        {msg.imageUrl && (
-                                                            <div className="relative group/img rounded-2xl overflow-hidden border border-gray-200 dark:border-cyan-500/30 shadow-2xl animate-in zoom-in-95 duration-500">
-                                                                <img src={msg.imageUrl} alt="AI Generated" className="w-full h-auto object-cover max-h-[500px]" />
-                                                                <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover/img:opacity-100 backdrop-blur-[2px]">
-                                                                    <button 
-                                                                        onClick={async () => {
-                                                                            const downloadPromise = async () => {
-                                                                                try {
-                                                                                    setFeedbackToast("Downloading Zylron Creation... 📥");
-                                                                                    const res = await fetch(msg.imageUrl);
-                                                                                    if (!res.ok) throw new Error("CORS or Network Error");
-                                                                                    const blob = await res.blob();
-                                                                                    const url = window.URL.createObjectURL(blob);
-                                                                                    const link = document.createElement('a');
-                                                                                    link.href = url;
-                                                                                    link.download = `zylron-ai-${Date.now()}.jpg`;
-                                                                                    link.click();
-                                                                                    window.URL.revokeObjectURL(url);
-                                                                                    setFeedbackToast("Download Complete! ✨");
-                                                                                } catch (e) {
-                                                                                    console.warn("Direct download failed, falling back to new tab...");
-                                                                                    window.open(msg.imageUrl, '_blank');
-                                                                                    setFeedbackToast("Opening in new tab for manual save... 🚀");
-                                                                                }
-                                                                                setTimeout(() => setFeedbackToast(null), 3000);
-                                                                            };
-                                                                            downloadPromise();
-                                                                        }}
-                                                                        className="p-4 bg-white/10 hover:bg-emerald-600 backdrop-blur-xl rounded-full text-white transition-all transform hover:scale-110 shadow-2xl border border-white/20"
-                                                                    >
-                                                                        <Download size={28} />
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                        <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed prose-p:leading-relaxed prose-a:text-emerald-600 dark:prose-a:text-cyan-400 drop-shadow-none dark:drop-shadow-sm">
-                                                            <TypewriterMarkdown text={msg.content} animate={msg.animate} />
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {!msg.isSystem && msg.type !== 'error' && (
-                                                    <div className="mt-4 pt-3 border-t border-gray-200/50 dark:border-gray-700/50 flex flex-col gap-3 opacity-40 group-hover/msg:opacity-100 transition-all">
-                                                        <div className="flex items-center justify-between">
-                                                            <div className="flex items-center gap-1">
-                                                                {msg.type === 'ai' && msg.agentUsed && (
-                                                                    <div className="mr-2 flex items-center gap-1.5 px-2 py-1 rounded-md bg-cyan-500/10 text-cyan-500 text-[9px] font-black uppercase tracking-tighter border border-cyan-500/20 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.2)]">
-                                                                        <Activity size={10} /> Neural Agent
-                                                                    </div>
-                                                                )}
-                                                                <button type="button" onClick={() => handleFeedback(idx, 'up')} className={`p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all ${msg.feedback === 'up' ? 'text-emerald-500 dark:text-cyan-400' : 'text-gray-400'}`}>
-                                                                    <ThumbsUp size={14} fill={msg.feedback === 'up' ? 'currentColor' : 'none'} />
-                                                                </button>
-                                                                <button type="button" onClick={() => handleFeedback(idx, 'down')} className={`p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all ${msg.feedback === 'down' ? 'text-red-500 dark:text-red-400' : 'text-gray-400'}`}>
-                                                                    <ThumbsDown size={14} fill={msg.feedback === 'down' ? 'currentColor' : 'none'} />
-                                                                </button>
-                                                            </div>
-                                                            <div className="flex items-center gap-2">
-                                                                <button type="button" onClick={() => copyToClipboard(msg.content, idx)} className={`flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-all text-[10px] font-bold uppercase tracking-wider ${copiedIndex === idx ? 'text-emerald-500 dark:text-cyan-400' : 'text-gray-400'}`}>
-                                                                    {copiedIndex === idx ? <Check size={12} /> : <Copy size={12} />} {copiedIndex === idx ? 'Copied' : 'Copy'}
-                                                                </button>
-                                                                <button type="button" onClick={() => speakText(msg.content, idx)} className={`p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-all ${isSpeakingIndex === idx ? 'text-emerald-500 dark:text-cyan-400 animate-pulse' : 'text-gray-400'}`}>
-                                                                    {isSpeakingIndex === idx ? <VolumeX size={14} /> : <Volume2 size={14} />}
-                                                                </button>
-
-                                                                {msg.type === 'ai' && !msg.isSystem && (
-                                                                    <button onClick={() => setPinnedMessages(prev => prev.find(p => p === msg) ? prev.filter(p => p !== msg) : [...prev, msg])} className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all" title="Pin message">
-                                                                        {pinnedMessages.includes(msg) ? <PinOff size={14} className="text-amber-500" /> : <Pin size={14} className="text-gray-400" />}
-                                                                    </button>
-                                                                )}
-
-                                                                {msg.timestamp && (
-                                                                    <span className="text-[9px] text-gray-400 dark:text-gray-600 font-bold ml-2 self-center">{msg.timestamp}</span>
-                                                                )}
-                                                            </div>
-                                                        </div>
-
-                                                        {/* 🚀 ACTION CLUSTER (Clean Dedicated Row) */}
-                                                        {msg.previewUrl && (
-                                                            <div className="flex gap-3 mt-1 animate-in fade-in slide-in-from-bottom-3 duration-500 w-full">
-                                                                <button 
-                                                                    type="button" 
-                                                                    onClick={() => window.open(`${msg.previewUrl}&t=${Date.now()}`, '_blank')} 
-                                                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-700 text-white text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-[0_0_20px_rgba(6,182,212,0.4)] active:scale-95"
-                                                                >
-                                                                    <Globe size={14} /> Launch Live Preview
-                                                                </button>
-                                                                <button 
-                                                                    type="button" 
-                                                                    onClick={() => {
-                                                                        setPreviewCode(`<iframe src="${msg.previewUrl}&t=${Date.now()}" style="width:100%;height:100%;border:none;background:#0f172a;" title="Neural Sandbox"></iframe>`);
-                                                                        setIsCodeModalOpen(true);
-                                                                    }} 
-                                                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 border border-cyan-500/30 text-cyan-400 text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-[0_0_15px_rgba(6,182,212,0.1)] active:scale-95"
-                                                                >
-                                                                    <Monitor size={14} /> Neural Sandbox
-                                                                </button>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-
-                            {isLoading && (
-                                <div className="flex justify-start">
-                                    <div className="max-w-[85%] md:max-w-3xl flex gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-white dark:bg-black border border-gray-200 dark:border-cyan-500/30 flex items-center justify-center shrink-0 shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all duration-300 overflow-hidden relative">
-                                            <div className="absolute inset-0 bg-cyan-500/10 animate-pulse"></div>
-                                            <img src={ZylronLogo} alt="Zylron AI" className="h-7 w-7 relative object-contain animate-pulse" />
-                                        </div>
-                                        <div className="px-5 py-4 rounded-3xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-gray-800 dark:text-gray-200 rounded-tl-sm flex items-center gap-2 shadow-sm dark:shadow-lg">
-                                            <div className="typing-dot w-2 h-2 rounded-full bg-gray-400 dark:bg-cyan-500 dark:shadow-[0_0_8px_rgba(0,255,255,0.8)]"></div>
-                                            <div className="typing-dot w-2 h-2 rounded-full bg-gray-400 dark:bg-cyan-500 dark:shadow-[0_0_8px_rgba(0,255,255,0.8)]"></div>
-                                            <div className="typing-dot w-2 h-2 rounded-full bg-gray-400 dark:bg-cyan-500 dark:shadow-[0_0_8px_rgba(0,255,255,0.8)]"></div>
+                                            <button onClick={() => { setPinnedMessages([]); localStorage.removeItem('zylron_pinned_msgs'); }} className="ml-auto text-[10px] text-amber-600 hover:text-red-500 font-black uppercase tracking-widest transition-colors">Clear All</button>
                                         </div>
                                     </div>
-                                </div>
-                            )}
-                            <div ref={messagesEndRef} />
+                                )}
 
-                            {/* AI Follow-up Suggestions */}
-                            {followUpSuggestions.length > 0 && !isLoading && (
-                                <div className="flex flex-wrap gap-2 mt-4 mb-2 px-2 animate-in slide-in-from-bottom-3 duration-400">
-                                    <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 self-center">💡 Follow up:</span>
-                                    {followUpSuggestions.map((s, i) => (
-                                        <button key={i} onClick={() => setInput(s)} className="px-3 py-1.5 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-[11px] font-semibold text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-cyan-900/30 hover:text-emerald-700 dark:hover:text-cyan-300 hover:border-emerald-300 dark:hover:border-cyan-500/50 transition-all shadow-sm">
-                                            {s}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
+                                {messages.map((msg, idx) => (
+                                    <div key={idx} id={`msg-${msg.timestamp || idx}`} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} ${msg.isSystem ? 'justify-center my-6' : ''} transition-all duration-500`}>
+                                        {msg.isSystem ? (
+                                            <div className="flex items-center gap-4 w-full max-w-xl">
+                                                <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent"></div>
+                                                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                                                    {msg.content.replace(/\*/g, '')}
+                                                </span>
+                                                <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent"></div>
+                                            </div>
+                                        ) : (
+                                            <div className={`w-full max-w-[95%] md:max-w-[85%] lg:max-w-5xl xl:max-w-6xl flex gap-4 ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                                                <div 
+                                                    className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 overflow-hidden ${msg.type === 'user' ? 'bg-emerald-100 dark:bg-black border border-emerald-300 dark:border-cyan-500/80 shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.4)]' : msg.type === 'error' ? 'bg-red-100 dark:bg-red-600' : 'bg-gray-100 dark:bg-black border border-gray-300 dark:border-cyan-500/30 shadow-sm dark:shadow-[0_0_10px_rgba(0,255,255,0.2)]'}`}
+                                                    style={msg.type === 'ai' ? { borderColor: 'var(--persona-color)', boxShadow: `0 0 15px var(--persona-glow)` } : {}}
+                                                >
+                                                    {msg.type === 'user' ? <User size={20} className="text-emerald-700 dark:text-cyan-400 dark:drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]" /> : <img src={ZylronLogo} alt="Zylron AI" className="h-8 w-8 rounded-full object-cover" />}
+                                                </div>
 
-                            {/* Removed old pinned tray from bottom */}
-                        </div>
-                    )}
-                </div>
+                                                <div className={`px-5 py-4 rounded-3xl overflow-hidden transition-all duration-300 relative group/msg ${msg.type === 'user'
+                                                    ? 'bg-emerald-50 dark:bg-black border border-gray-200 dark:border-cyan-500/60 text-black dark:text-white rounded-tr-sm shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.2)]'
+                                                    : msg.type === 'error'
+                                                        ? 'bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/50 text-red-600 dark:text-red-400 shadow-sm dark:shadow-[0_0_15px_rgba(239,68,68,0.2)] rounded-tl-sm'
+                                                        : 'bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-black dark:text-white rounded-tl-sm shadow-sm dark:shadow-xl'
+                                                    }`}
+                                                    style={msg.type === 'ai' ? { 
+                                                        borderLeft: `4px solid var(--persona-color)`,
+                                                        background: theme === 'dark' 
+                                                            ? `linear-gradient(to bottom right, rgba(15, 23, 42, 0.8), rgba(0, 0, 0, 0.9))` 
+                                                            : `linear-gradient(to bottom right, rgba(255, 255, 255, 1), rgba(243, 244, 246, 0.5))`,
+                                                        boxShadow: `0 4px 20px -5px rgba(0, 0, 0, 0.1), 0 0 15px -3px var(--persona-glow)`
+                                                    } : {}}
+                                                >
+                                                    {msg.type === 'user' ? (
+                                                        <div className="flex flex-col gap-3">
+                                                            {msg.imageUrl && (
+                                                                <div className="relative max-w-sm rounded-xl overflow-hidden border border-gray-200 dark:border-cyan-500/30 shadow-md">
+                                                                    <img src={msg.imageUrl} alt="Uploaded content" className="w-full h-auto object-cover max-h-[300px]" />
+                                                                </div>
+                                                            )}
+                                                            <p className="whitespace-pre-wrap leading-relaxed">
+                                                                {msg.content}
+                                                            </p>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col gap-4">
+                                                            {msg.imageUrl && (
+                                                                <div className="relative group/img rounded-2xl overflow-hidden border border-gray-200 dark:border-cyan-500/30 shadow-2xl animate-in zoom-in-95 duration-500">
+                                                                    <img src={msg.imageUrl} alt="AI Generated" className="w-full h-auto object-cover max-h-[500px]" />
+                                                                    <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover/img:opacity-100 backdrop-blur-[2px]">
+                                                                        <button 
+                                                                            onClick={async () => {
+                                                                                const downloadPromise = async () => {
+                                                                                    try {
+                                                                                        setFeedbackToast("Downloading Zylron Creation... 📥");
+                                                                                        const res = await fetch(msg.imageUrl);
+                                                                                        if (!res.ok) throw new Error("CORS or Network Error");
+                                                                                        const blob = await res.blob();
+                                                                                        const url = window.URL.createObjectURL(blob);
+                                                                                        const link = document.createElement('a');
+                                                                                        link.href = url;
+                                                                                        link.download = `zylron-ai-${Date.now()}.jpg`;
+                                                                                        link.click();
+                                                                                        window.URL.revokeObjectURL(url);
+                                                                                        setFeedbackToast("Download Complete! ✨");
+                                                                                    } catch (e) {
+                                                                                        console.warn("Direct download failed, falling back to new tab...");
+                                                                                        window.open(msg.imageUrl, '_blank');
+                                                                                        setFeedbackToast("Opening in new tab for manual save... 🚀");
+                                                                                    }
+                                                                                    setTimeout(() => setFeedbackToast(null), 3000);
+                                                                                };
+                                                                                downloadPromise();
+                                                                            }}
+                                                                            className="p-4 bg-white/10 hover:bg-emerald-600 backdrop-blur-xl rounded-full text-white transition-all transform hover:scale-110 shadow-2xl border border-white/20"
+                                                                        >
+                                                                            <Download size={28} />
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed prose-p:leading-relaxed prose-a:text-emerald-600 dark:prose-a:text-cyan-400 drop-shadow-none dark:drop-shadow-sm">
+                                                                <TypewriterMarkdown text={msg.content} animate={msg.animate} />
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {!msg.isSystem && msg.type !== 'error' && (
+                                                        <div className="mt-4 pt-3 border-t border-gray-200/50 dark:border-gray-700/50 flex flex-col gap-3 opacity-40 group-hover/msg:opacity-100 transition-all">
+                                                            <div className="flex items-center justify-between">
+                                                                <div className="flex items-center gap-1">
+                                                                    {msg.type === 'ai' && msg.agentUsed && (
+                                                                        <div className="mr-2 flex items-center gap-1.5 px-2 py-1 rounded-md bg-cyan-500/10 text-cyan-500 text-[9px] font-black uppercase tracking-tighter border border-cyan-500/20 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.2)]">
+                                                                            <Activity size={10} /> Neural Agent
+                                                                        </div>
+                                                                    )}
+                                                                    <button type="button" onClick={() => handleFeedback(idx, 'up')} className={`p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all ${msg.feedback === 'up' ? 'text-emerald-500 dark:text-cyan-400' : 'text-gray-400'}`}>
+                                                                        <ThumbsUp size={14} fill={msg.feedback === 'up' ? 'currentColor' : 'none'} />
+                                                                    </button>
+                                                                    <button type="button" onClick={() => handleFeedback(idx, 'down')} className={`p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all ${msg.feedback === 'down' ? 'text-red-500 dark:text-red-400' : 'text-gray-400'}`}>
+                                                                        <ThumbsDown size={14} fill={msg.feedback === 'down' ? 'currentColor' : 'none'} />
+                                                                    </button>
+                                                                </div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <button type="button" onClick={() => copyToClipboard(msg.content, idx)} className={`flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-all text-[10px] font-bold uppercase tracking-wider ${copiedIndex === idx ? 'text-emerald-500 dark:text-cyan-400' : 'text-gray-400'}`}>
+                                                                        {copiedIndex === idx ? <Check size={12} /> : <Copy size={12} />} {copiedIndex === idx ? 'Copied' : 'Copy'}
+                                                                    </button>
+                                                                    <button type="button" onClick={() => speakText(msg.content, idx)} className={`p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-all ${isSpeakingIndex === idx ? 'text-emerald-500 dark:text-cyan-400 animate-pulse' : 'text-gray-400'}`}>
+                                                                        {isSpeakingIndex === idx ? <VolumeX size={14} /> : <Volume2 size={14} />}
+                                                                    </button>
+
+                                                                    {msg.type === 'ai' && !msg.isSystem && (
+                                                                        <button onClick={() => setPinnedMessages(prev => prev.find(p => p === msg) ? prev.filter(p => p !== msg) : [...prev, msg])} className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all" title="Pin message">
+                                                                            {pinnedMessages.includes(msg) ? <PinOff size={14} className="text-amber-500" /> : <Pin size={14} className="text-gray-400" />}
+                                                                        </button>
+                                                                    )}
+
+                                                                    {msg.timestamp && (
+                                                                        <span className="text-[9px] text-gray-400 dark:text-gray-600 font-bold ml-2 self-center">{msg.timestamp}</span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* 🚀 ACTION CLUSTER (Clean Dedicated Row) */}
+                                                            {msg.previewUrl && (
+                                                                <div className="flex gap-3 mt-1 animate-in fade-in slide-in-from-bottom-3 duration-500 w-full">
+                                                                    <button 
+                                                                        type="button" 
+                                                                        onClick={() => window.open(`${msg.previewUrl}&t=${Date.now()}`, '_blank')} 
+                                                                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-700 text-white text-[10px] font-black uppercase tracking-widest hover:scale-110 transition-all shadow-[0_0_20px_rgba(6,182,212,0.4)] active:scale-95"
+                                                                    >
+                                                                        <Globe size={14} /> Launch Live Preview
+                                                                    </button>
+                                                                    <button 
+                                                                        type="button" 
+                                                                        onClick={() => {
+                                                                            setPreviewCode(`<iframe src="${msg.previewUrl}&t=${Date.now()}" style="width:100%;height:100%;border:none;background:#0f172a;" title="Neural Sandbox"></iframe>`);
+                                                                            setIsCodeModalOpen(true);
+                                                                        }} 
+                                                                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 border border-cyan-500/30 text-cyan-400 text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-[0_0_15px_rgba(6,182,212,0.1)] active:scale-95"
+                                                                    >
+                                                                        <Monitor size={14} /> Neural Sandbox
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+
+                                {isLoading && (
+                                    <div className="flex justify-start">
+                                        <div className="max-w-[85%] md:max-w-3xl flex gap-4">
+                                            <div className="w-10 h-10 rounded-full bg-white dark:bg-black border border-gray-200 dark:border-cyan-500/30 flex items-center justify-center shrink-0 shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all duration-300 overflow-hidden relative">
+                                                <div className="absolute inset-0 bg-cyan-500/10 animate-pulse"></div>
+                                                <img src={ZylronLogo} alt="Zylron AI" className="h-7 w-7 relative object-contain animate-pulse" />
+                                            </div>
+                                            <div className="px-5 py-4 rounded-3xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-gray-800 dark:text-gray-200 rounded-tl-sm flex items-center gap-2 shadow-sm dark:shadow-lg">
+                                                <div className="typing-dot w-2 h-2 rounded-full bg-gray-400 dark:bg-cyan-500 dark:shadow-[0_0_8px_rgba(0,255,255,0.8)]"></div>
+                                                <div className="typing-dot w-2 h-2 rounded-full bg-gray-400 dark:bg-cyan-500 dark:shadow-[0_0_8px_rgba(0,255,255,0.8)]"></div>
+                                                <div className="typing-dot w-2 h-2 rounded-full bg-gray-400 dark:bg-cyan-500 dark:shadow-[0_0_8px_rgba(0,255,255,0.8)]"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                <div ref={messagesEndRef} />
+
+                                {/* AI Follow-up Suggestions */}
+                                {followUpSuggestions.length > 0 && !isLoading && (
+                                    <div className="flex flex-wrap gap-2 mt-4 mb-2 px-2 animate-in slide-in-from-bottom-3 duration-400">
+                                        <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 self-center">💡 Follow up:</span>
+                                        {followUpSuggestions.map((s, i) => (
+                                            <button key={i} onClick={() => setInput(s)} className="px-3 py-1.5 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-[11px] font-semibold text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-cyan-900/30 hover:text-emerald-700 dark:hover:text-cyan-300 hover:border-emerald-300 dark:hover:border-cyan-500/50 transition-all shadow-sm">
+                                                {s}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
 
                 {/* Glassmorphism Input Area */}
                 <div className="p-2 sm:p-4 bg-transparent relative z-10 w-full mb-1 sm:mb-2">
@@ -2301,9 +2299,49 @@ const Dashboard = () => {
                         </div>
 
                     </div>
+
+                    {/* Feature H: Neural Widgets Overlay (Floating) */}
+                    {showWidgets && (
+                        <div className="absolute top-20 right-6 w-72 z-40 animate-in slide-in-from-right-5 duration-500">
+                            <div className="bg-white/80 dark:bg-black/60 backdrop-blur-2xl border border-emerald-500/20 dark:border-cyan-500/30 rounded-3xl shadow-2xl overflow-hidden">
+                                <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Activity size={14} className="text-emerald-500" />
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Neural Widgets</span>
+                                    </div>
+                                    <span className="text-[10px] font-bold text-gray-400">{currentTime}</span>
+                                </div>
+                                <div className="p-4 space-y-4">
+                                    {/* Quick Notes Widget */}
+                                    <div className="space-y-2">
+                                        <label className="text-[9px] font-bold text-gray-400 uppercase tracking-tight">Neural Scratchpad</label>
+                                        <textarea 
+                                            value={widgetNote}
+                                            onChange={(e) => updateWidgetNote(e.target.value)}
+                                            placeholder="Sync thoughts to cloud..."
+                                            className="w-full h-24 bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 rounded-xl p-2 text-xs focus:outline-none focus:border-cyan-500/50 transition-all resize-none"
+                                        />
+                                    </div>
+                                    {/* Focus Timer Widget */}
+                                    <div className="p-3 bg-emerald-500/5 dark:bg-cyan-500/5 rounded-2xl border border-emerald-500/10 dark:border-cyan-500/10 flex items-center justify-between">
+                                        <div className="flex flex-col">
+                                            <span className="text-[9px] font-bold text-emerald-600 dark:text-cyan-400 uppercase">Focus Timer</span>
+                                            <span className="text-lg font-black dark:text-white tabular-nums">{formatTime(focusTimer)}</span>
+                                        </div>
+                                        <button 
+                                            onClick={() => setIsTimerActive(!isTimerActive)}
+                                            className={`p-2 rounded-full transition-all ${isTimerActive ? 'bg-red-500/20 text-red-500' : 'bg-emerald-500/20 text-emerald-500'}`}
+                                        >
+                                            {isTimerActive ? <VolumeX size={16} /> : <Play size={16} />}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
 
-            </div>
             {/* Zylron Sense HCI Component */}
             {isSenseActive && (
                 <ZylronSense 
@@ -2513,7 +2551,10 @@ const Dashboard = () => {
                     </div>
                 </div>
             )}
-        </div>
+            </div>
+            </div>
+            </div>
+        </React.Fragment>
     );
 };
 
