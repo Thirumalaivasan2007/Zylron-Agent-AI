@@ -88,5 +88,21 @@ Zylron AI 3.0 is a state-of-the-art Agentic AI ecosystem that transcends traditi
 
 ---
 
+## 🗺️ Future Roadmap
+
+### **1. The Pro Tier (Stripe Integration) 💳**
+- **Objective**: Implementation of a subscription-based model to unlock unlimited AI reasoning beyond the 50-message daily limit.
+- **Tech Stack**: Integration of **Stripe API** for secure payments and automated Firebase account status updates (Standard -> Pro).
+
+### **2. Team Workspaces (Multi-User Collaboration) 🏢**
+- **Objective**: Transition from a single-user environment to a collaborative multi-user workspace.
+- **Features**: Shared chat histories, collaborative project discussions, and real-time code peer-reviews in a unified Discord-inspired team environment.
+
+### **3. Zylron Memory (Long-term Context) 🧠**
+- **Objective**: Solve the "memory loss" issue across browser refreshes and different sessions.
+- **Implementation**: Deployment of a **Vector Database (Pinecone)** to store past conversations and preferences, enabling Zylron to recall specific details from previous weeks and optimize code based on historical context.
+
+---
+
 ## 🤝 Credits
 Developed by **Thirumalaivasan** | © 2026 Zylron AI Ecosystem.
