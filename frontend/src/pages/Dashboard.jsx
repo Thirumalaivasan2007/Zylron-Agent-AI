@@ -359,6 +359,22 @@ const Dashboard = () => {
     const [isGeneratingImage, setIsGeneratingImage] = useState(false);
     const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
 
+    // Step 1: Pro Tier & Stripe Integration
+    const [isPro, setIsPro] = useState(localStorage.getItem('zylron_is_pro') === 'true');
+    const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+
+    const handleUpgradeToPro = async () => {
+        setFeedbackToast("💳 Redirecting to Stripe Secure Checkout...");
+        // Simulate Stripe Checkout
+        setTimeout(() => {
+            setIsPro(true);
+            localStorage.setItem('zylron_is_pro', 'true');
+            setIsUpgradeModalOpen(false);
+            setFeedbackToast("🎉 Welcome to Zylron Pro! Unlimited Credits Unlocked.");
+            setTimeout(() => setFeedbackToast(null), 4000);
+        }, 2500);
+    };
+
     // Feature 2: Semantic Memory
     // (isMemoryEnabled already declared above)
 
@@ -391,9 +407,11 @@ const Dashboard = () => {
     // (pinnedMessages already declared at top)
     // Feature D: Chat Statistics Modal
     const [showStatsModal, setShowStatsModal] = useState(false);
-    // Feature E: Model Switcher
     const [activeModel, setActiveModel] = useState(localStorage.getItem('zylron_model') || 'gemini-1.5-flash');
     const [showModelMenu, setShowModelMenu] = useState(false);
+
+    // Step 2: Team Workspaces
+    const [activeWorkspace, setActiveWorkspace] = useState('personal'); // 'personal' or 'team'
     // Feature F: Follow-up Suggestions
     const [followUpSuggestions, setFollowUpSuggestions] = useState([]);
     // Feature G: Desktop Notifications
@@ -1107,15 +1125,22 @@ const Dashboard = () => {
         if (e && e.preventDefault) e.preventDefault();
         if (!input.trim() && !activePdf && !activeImage) return;
 
-        // Production Limit Enforcement
-        if (credits >= 50) {
+        // Step 1: Production Limit Enforcement (Pro Check)
+        if (!isPro && credits >= 50) {
             setMessages(prev => [...prev, { 
                 type: 'ai', 
-                content: "⚠️ **Daily Limit Reached.** You have exhausted your 50 free daily AI credits. Please upgrade to Zylron Pro to continue using AI services.",
+                content: "⚠️ **Daily Limit Reached.** You have exhausted your 50 free daily AI credits. Please upgrade to **Zylron Pro** to unlock unlimited neural reasoning.",
                 animate: false,
                 isSystem: true
             }]);
+            setIsUpgradeModalOpen(true); // Trigger upgrade UI
             return;
+        }
+
+        // Step 3: Neural Deep Recall
+        let recallContext = "";
+        if (isMemoryEnabled) {
+            recallContext = await deepRecall(userMsg);
         }
 
         const userMsg = input;
@@ -1146,8 +1171,8 @@ const Dashboard = () => {
         setIsLoading(true);
 
         // Phase 10: Long-term Memory Injection
-        let memoryContext = "";
-        if (isMemoryEnabled && history.length > 0) {
+        let memoryContext = recallContext;
+        if (isMemoryEnabled && history.length > 0 && !memoryContext) {
             const keywords = userMsg.toLowerCase().split(' ').filter(w => w.length > 3);
             const relevantChats = history.filter(chat => 
                 keywords.some(k => chat.message.toLowerCase().includes(k))
@@ -1483,6 +1508,27 @@ const Dashboard = () => {
         }
     };
 
+    // Step 3: Zylron Deep Recall (Long-term Memory)
+    const deepRecall = async (query) => {
+        setFeedbackToast("🧠 Accessing Neural Memory...");
+        // Filter history for semantically relevant chats
+        const relevantChats = history.filter(chat => 
+            chat.message.toLowerCase().includes(query.toLowerCase()) ||
+            chat.messages.some(m => m.content.toLowerCase().includes(query.toLowerCase()))
+        ).slice(0, 3); // Top 3 relevant chats
+
+        if (relevantChats.length > 0) {
+            const memoryContext = relevantChats.map(chat => `[MEMORY: ${chat.message}] - ${chat.messages.slice(-2).map(m => m.content).join(' | ')}`).join('\n');
+            setFeedbackToast(`🧠 Recalled ${relevantChats.length} relevant sessions!`);
+            setTimeout(() => setFeedbackToast(null), 3000);
+            return memoryContext;
+        } else {
+            setFeedbackToast("❌ No relevant memories found.");
+            setTimeout(() => setFeedbackToast(null), 2000);
+            return "";
+        }
+    };
+
     // Feature B2: Keyboard Shortcuts
     useEffect(() => {
         const handler = (e) => {
@@ -1538,6 +1584,10 @@ const Dashboard = () => {
                     updateSessionFolder={updateSessionFolder}
                     credits={credits} 
                     xp={xp}
+                    isPro={isPro}
+                    onUpgrade={() => setIsUpgradeModalOpen(true)}
+                    activeWorkspace={activeWorkspace}
+                    onWorkspaceChange={setActiveWorkspace}
                     onShare={handleShareChat}
                     onExportPDF={exportToPDF}
                     onExportMD={exportToMarkdown}
@@ -2490,6 +2540,78 @@ const Dashboard = () => {
                     <span className="text-sm font-bold text-gray-800 dark:text-white">{feedbackToast}</span>
                 </div>
             )}
+
+
+            {/* Zylron Pro Upgrade Modal */}
+            <AnimatePresence>
+                {isUpgradeModalOpen && (
+                    <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsUpgradeModalOpen(false)}
+                            className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+                        />
+                        <motion.div 
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            className="relative w-full max-w-lg bg-white dark:bg-[#0f172a] border-2 border-cyan-500/50 rounded-[2.5rem] overflow-hidden shadow-[0_0_50px_rgba(6,182,212,0.2)]"
+                        >
+                            <div className="p-10 text-center">
+                                <div className="inline-flex p-5 bg-cyan-500/10 rounded-[2rem] mb-6 animate-bounce">
+                                    <Zap className="text-cyan-500" size={40} fill="currentColor" />
+                                </div>
+                                <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-2">Upgrade to Zylron Pro</h2>
+                                <p className="text-gray-500 dark:text-gray-400 mb-8 font-medium">Unlock the full potential of your Neural Agent.</p>
+
+                                <div className="space-y-4 mb-10">
+                                    {[
+                                        "Unlimited Neural Credits",
+                                        "Priority AI Processing",
+                                        "Team Workspace Collaboration",
+                                        "Pinecone Long-term Memory",
+                                        "Advanced Omni-Vision Pro"
+                                    ].map((feature, i) => (
+                                        <div key={i} className="flex items-center gap-3 bg-gray-50 dark:bg-black/40 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-cyan-500/30 transition-all">
+                                            <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                                                <Zap className="text-emerald-500" size={14} />
+                                            </div>
+                                            <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{feature}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-6 rounded-3xl border border-emerald-500/20 mb-8">
+                                    <div className="flex items-center justify-between">
+                                        <div className="text-left">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-cyan-500">Subscription Plan</p>
+                                            <h4 className="text-2xl font-black text-gray-900 dark:text-white">$9.00 <span className="text-sm font-medium text-gray-400">/ month</span></h4>
+                                        </div>
+                                        <div className="bg-white dark:bg-black/50 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-800">
+                                            <span className="text-xs font-black text-emerald-500">CANCEL ANYTIME</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button 
+                                    onClick={handleUpgradeToPro}
+                                    className="w-full py-5 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-black font-black rounded-2xl shadow-[0_10px_30px_rgba(6,182,212,0.3)] transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 uppercase tracking-widest"
+                                >
+                                    Activate Zylron Pro
+                                </button>
+                                <button 
+                                    onClick={() => setIsUpgradeModalOpen(false)}
+                                    className="mt-4 text-[10px] font-black text-gray-500 uppercase tracking-widest hover:text-gray-900 dark:hover:text-white transition-all"
+                                >
+                                    Maybe Later
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
 
             {/* Admin Intelligence Dashboard */}
             <AnimatePresence>

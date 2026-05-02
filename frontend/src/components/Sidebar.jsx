@@ -1,7 +1,7 @@
-import { Plus, Trash2, MessageSquare, Zap, Search, RefreshCw, Share2, FileDown, HelpCircle, Download, Pin } from 'lucide-react';
+import { Plus, Trash2, MessageSquare, Zap, Search, RefreshCw, Share2, FileDown, HelpCircle, Download, Pin, Users } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
-const Sidebar = ({ history, loadSession, handleNewChat, currentSessionId, deleteSession, togglePinSession, updateSessionFolder, credits = 0, xp = 0, onShare, onExportPDF, onExportMD, onTour, onAdmin }) => {
+const Sidebar = ({ history, loadSession, handleNewChat, currentSessionId, deleteSession, togglePinSession, updateSessionFolder, credits = 0, xp = 0, onShare, onExportPDF, onExportMD, onTour, onAdmin, isPro = false, onUpgrade, activeWorkspace = 'personal', onWorkspaceChange }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeFolder, setActiveFolder] = useState(() => localStorage.getItem('zylron_active_folder') || 'all');
 
@@ -24,6 +24,25 @@ const Sidebar = ({ history, loadSession, handleNewChat, currentSessionId, delete
     return (
         <div className="w-72 h-full bg-white/80 dark:bg-[#0f172a]/90 backdrop-blur-xl border-r border-gray-200/50 dark:border-cyan-900/30 flex flex-col transition-colors duration-300">
             <div className="p-4 pt-6 space-y-4">
+                {/* Workspace Switcher */}
+                <div className="flex bg-gray-100 dark:bg-black/50 p-1 rounded-2xl border border-gray-200 dark:border-gray-800">
+                    <button 
+                        onClick={() => onWorkspaceChange('personal')}
+                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[10px] font-black transition-all ${activeWorkspace === 'personal' ? 'bg-white dark:bg-cyan-500 text-black shadow-lg scale-[1.02]' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+                    >
+                        <MessageSquare size={14} /> PERSONAL
+                    </button>
+                    <button 
+                        onClick={() => {
+                            if (!isPro) { onUpgrade(); return; }
+                            onWorkspaceChange('team');
+                        }}
+                        className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[10px] font-black transition-all ${activeWorkspace === 'team' ? 'bg-white dark:bg-emerald-500 text-black shadow-lg scale-[1.02]' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+                    >
+                        <Users size={14} /> TEAM {!isPro && '🔒'}
+                    </button>
+                </div>
+
                 <button
                     onClick={handleNewChat}
                     className="flex items-center justify-start gap-3 bg-emerald-50 dark:bg-cyan-950/30 hover:bg-emerald-100 dark:hover:bg-cyan-900/50 text-emerald-700 dark:text-cyan-400 font-medium py-3 px-5 rounded-2xl transition-all duration-300 border border-emerald-200/50 dark:border-cyan-800/50 hover:shadow-[0_0_15px_rgba(0,255,255,0.1)] w-full group"
@@ -137,10 +156,15 @@ const Sidebar = ({ history, loadSession, handleNewChat, currentSessionId, delete
                         <Zap size={12} className="fill-current" />
                         Daily Credits
                     </div>
-                    <span className="text-[10px] font-mono font-bold text-gray-600 dark:text-cyan-300">{credits} / 50</span>
+                    <span className="text-[10px] font-mono font-bold text-gray-600 dark:text-cyan-300">
+                        {isPro ? '∞ / Unlimited' : `${credits} / 50`}
+                    </span>
                 </div>
                 <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden mb-3">
-                    <div className="h-full bg-emerald-500 dark:bg-cyan-500 shadow-[0_0_10px_rgba(0,255,255,0.4)] transition-all duration-500" style={{ width: `${(credits/50)*100}%` }}></div>
+                    <div 
+                        className={`h-full ${isPro ? 'bg-gradient-to-r from-cyan-400 to-blue-500 shadow-[0_0_15px_rgba(0,255,255,0.6)]' : 'bg-emerald-500 dark:bg-cyan-500 shadow-[0_0_10px_rgba(0,255,255,0.4)]'} transition-all duration-500`} 
+                        style={{ width: isPro ? '100%' : `${(credits/50)*100}%` }}
+                    ></div>
                 </div>
                 <button 
                     onClick={onAdmin}
@@ -152,7 +176,10 @@ const Sidebar = ({ history, loadSession, handleNewChat, currentSessionId, delete
                 {/* Hyper-Gen Feature 13: Neural XP Tracker */}
                 <div className="mt-4 p-4 bg-gradient-to-br from-emerald-500/5 to-cyan-500/5 border border-emerald-500/10 dark:border-cyan-500/20 rounded-2xl">
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Neural Level {Math.floor(Math.sqrt(xp / 100)) + 1}</span>
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                            {isPro && <span className="bg-cyan-500 text-black px-1.5 py-0.5 rounded mr-2 text-[8px] font-black animate-pulse">PRO</span>}
+                            Neural Level {Math.floor(Math.sqrt(xp / 100)) + 1}
+                        </span>
                         <span className="text-[10px] font-mono text-cyan-500">{xp} XP</span>
                     </div>
                     <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
@@ -164,7 +191,11 @@ const Sidebar = ({ history, loadSession, handleNewChat, currentSessionId, delete
                 </div>
                 <div className="mt-2.5">
                     <p className="text-[9px] text-gray-400 dark:text-gray-600 leading-relaxed text-center">
-                        Need more? <span className="text-emerald-600 dark:text-cyan-400 cursor-pointer hover:underline">Upgrade to Pro</span>
+                        {isPro ? (
+                            <span className="text-cyan-400 font-bold">✨ Zylron Pro Active</span>
+                        ) : (
+                            <>Need more? <span onClick={onUpgrade} className="text-emerald-600 dark:text-cyan-400 cursor-pointer hover:underline font-bold">Upgrade to Pro</span></>
+                        )}
                     </p>
                 </div>
             </div>
