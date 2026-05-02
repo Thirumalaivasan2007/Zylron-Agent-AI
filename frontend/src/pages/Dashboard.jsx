@@ -64,7 +64,8 @@ import {
     BarChart3,
     Cpu,
     BellRing,
-    SearchCheck
+    SearchCheck,
+    Users
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Joyride } from 'react-joyride';
