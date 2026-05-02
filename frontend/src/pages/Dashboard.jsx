@@ -1954,6 +1954,37 @@ const Dashboard = () => {
                         </div>
                     )}
 
+                    {/* Team Collaboration Bar - High-Tech Neural Sync Indicator */}
+                    {activeWorkspace === 'team' && (
+                        <div className="sticky top-0 z-30 mb-6 animate-in slide-in-from-top-4 duration-700">
+                            <div className="flex items-center justify-between px-5 py-3 bg-indigo-500/5 dark:bg-indigo-500/10 backdrop-blur-xl border border-indigo-500/20 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(99,102,241,0.1)]">
+                                <div className="flex items-center gap-4">
+                                    <div className="flex -space-x-3">
+                                        {['Thiru', 'Zylron_Bot', 'SaaS_Manager'].map((name, i) => (
+                                            <div key={i} className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-900 overflow-hidden ring-2 ring-indigo-500/20 shadow-lg hover:scale-110 transition-all cursor-pointer relative group">
+                                                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`} alt={name} className="w-full h-full object-cover bg-indigo-100" />
+                                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all"></div>
+                                            </div>
+                                        ))}
+                                        <div className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-900 bg-indigo-600 flex items-center justify-center text-[10px] font-black text-white shadow-lg">+2</div>
+                                    </div>
+                                    <div className="h-4 w-[1px] bg-indigo-500/30 mx-1"></div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest leading-none">Neural Sync</span>
+                                        <span className="text-[9px] font-bold text-gray-400 dark:text-gray-500">5 active collaborators</span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+                                        <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-tighter">Live Shared Memory</span>
+                                    </div>
+                                    <button className="p-2 rounded-full hover:bg-indigo-500/10 text-indigo-500 transition-all"><Users size={16} /></button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Focus Mode Overlay — click to exit */}
                     {isFocusMode && (
                         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-20 flex items-end justify-center pb-8" onClick={() => setIsFocusMode(false)}>
@@ -2112,158 +2143,159 @@ const Dashboard = () => {
                                                 <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent"></div>
                                             </div>
                                         ) : (
-                                                <div className={`flex flex-col ${msg.type === 'user' ? 'items-end' : 'items-start'}`}>
-                                                    {msg.memberName && (
-                                                        <div className={`flex items-center gap-1.5 mb-1 ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                                                            <span className="text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest opacity-60 group-hover/msg:opacity-100 transition-opacity">
-                                                                {msg.memberName}
-                                                            </span>
-                                                            <div className={`w-1 h-1 rounded-full ${msg.type === 'user' ? 'bg-emerald-500' : 'bg-indigo-500'}`}></div>
-                                                        </div>
-                                                    )}
-                                                    
-                                                    <div className={`flex gap-4 ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                                                        <div 
-                                                            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 overflow-hidden ${msg.type === 'user' ? 'bg-emerald-100 dark:bg-black border border-emerald-300 dark:border-cyan-500/80 shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.4)]' : msg.type === 'error' ? 'bg-red-100 dark:bg-red-600' : 'bg-gray-100 dark:bg-black border border-gray-300 dark:border-cyan-500/30 shadow-sm dark:shadow-[0_0_10px_rgba(0,255,255,0.2)]'}`}
-                                                            style={msg.type === 'ai' ? { borderColor: 'var(--persona-color)', boxShadow: `0 0 15px var(--persona-glow)` } : {}}
-                                                        >
-                                                            {msg.type === 'user' ? (
-                                                                msg.workspace === 'team' ? (
-                                                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${msg.memberName}`} alt={msg.memberName} className="h-full w-full object-cover" />
-                                                                ) : (
-                                                                    <User size={20} className="text-emerald-700 dark:text-cyan-400 dark:drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]" />
-                                                                )
-                                                            ) : <img src={ZylronLogo} alt="Zylron AI" className="h-8 w-8 rounded-full object-cover" />}
-                                                        </div>
+                                            <div className={`w-full max-w-[95%] md:max-w-[85%] lg:max-w-5xl xl:max-w-6xl flex flex-col ${msg.type === 'user' ? 'items-end' : 'items-start'}`}>
+                                                {msg.memberName && (
+                                                    <div className={`flex items-center gap-1.5 mb-1 ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                                                        <span className="text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest opacity-60 group-hover/msg:opacity-100 transition-opacity">
+                                                            {msg.memberName}
+                                                        </span>
+                                                        <div className={`w-1 h-1 rounded-full ${msg.type === 'user' ? 'bg-emerald-500' : 'bg-indigo-500'}`}></div>
+                                                    </div>
+                                                )}
 
-                                                <div className={`px-5 py-4 rounded-3xl overflow-hidden transition-all duration-300 relative group/msg ${msg.type === 'user'
-                                                    ? 'bg-emerald-50 dark:bg-black border border-gray-200 dark:border-cyan-500/60 text-black dark:text-white rounded-tr-sm shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.2)]'
-                                                    : msg.type === 'error'
-                                                        ? 'bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/50 text-red-600 dark:text-red-400 shadow-sm dark:shadow-[0_0_15px_rgba(239,68,68,0.2)] rounded-tl-sm'
-                                                        : 'bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-black dark:text-white rounded-tl-sm shadow-sm dark:shadow-xl'
-                                                    }`}
-                                                    style={msg.type === 'ai' ? { 
-                                                        borderLeft: `4px solid var(--persona-color)`,
-                                                        background: theme === 'dark' 
-                                                            ? `linear-gradient(to bottom right, rgba(15, 23, 42, 0.8), rgba(0, 0, 0, 0.9))` 
-                                                            : `linear-gradient(to bottom right, rgba(255, 255, 255, 1), rgba(243, 244, 246, 0.5))`,
-                                                        boxShadow: `0 4px 20px -5px rgba(0, 0, 0, 0.1), 0 0 15px -3px var(--persona-glow)`
-                                                    } : {}}
-                                                >
-                                                    {msg.type === 'user' ? (
-                                                        <div className="flex flex-col gap-3">
-                                                            {msg.imageUrl && (
-                                                                <div className="relative max-w-sm rounded-xl overflow-hidden border border-gray-200 dark:border-cyan-500/30 shadow-md">
-                                                                    <img src={msg.imageUrl} alt="Uploaded content" className="w-full h-auto object-cover max-h-[300px]" />
+                                                <div className={`flex gap-4 w-full ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                                                    <div 
+                                                        className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 overflow-hidden ${msg.type === 'user' ? 'bg-emerald-100 dark:bg-black border border-emerald-300 dark:border-cyan-500/80 shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.4)]' : msg.type === 'error' ? 'bg-red-100 dark:bg-red-600' : 'bg-gray-100 dark:bg-black border border-gray-300 dark:border-cyan-500/30 shadow-sm dark:shadow-[0_0_10px_rgba(0,255,255,0.2)]'}`}
+                                                        style={msg.type === 'ai' ? { borderColor: 'var(--persona-color)', boxShadow: `0 0 15px var(--persona-glow)` } : {}}
+                                                    >
+                                                        {msg.type === 'user' ? (
+                                                            msg.workspace === 'team' ? (
+                                                                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${msg.memberName}`} alt={msg.memberName} className="h-full w-full object-cover" />
+                                                            ) : (
+                                                                <User size={20} className="text-emerald-700 dark:text-cyan-400 dark:drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]" />
+                                                            )
+                                                        ) : <img src={ZylronLogo} alt="Zylron AI" className="h-8 w-8 rounded-full object-cover" />}
+                                                    </div>
+
+                                                    <div className={`px-5 py-4 rounded-3xl overflow-hidden transition-all duration-300 relative group/msg ${msg.type === 'user'
+                                                        ? 'bg-emerald-50 dark:bg-black border border-gray-200 dark:border-cyan-500/60 text-black dark:text-white rounded-tr-sm shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.2)]'
+                                                        : msg.type === 'error'
+                                                            ? 'bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/50 text-red-600 dark:text-red-400 shadow-sm dark:shadow-[0_0_15px_rgba(239,68,68,0.2)] rounded-tl-sm'
+                                                            : 'bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-black dark:text-white rounded-tl-sm shadow-sm dark:shadow-xl'
+                                                        }`}
+                                                        style={msg.type === 'ai' ? { 
+                                                            borderLeft: `4px solid var(--persona-color)`,
+                                                            background: theme === 'dark' 
+                                                                ? `linear-gradient(to bottom right, rgba(15, 23, 42, 0.8), rgba(0, 0, 0, 0.9))` 
+                                                                : `linear-gradient(to bottom right, rgba(255, 255, 255, 1), rgba(243, 244, 246, 0.5))`,
+                                                            boxShadow: `0 4px 20px -5px rgba(0, 0, 0, 0.1), 0 0 15px -3px var(--persona-glow)`
+                                                        } : {}}
+                                                    >
+                                                        {msg.type === 'user' ? (
+                                                            <div className="flex flex-col gap-3">
+                                                                {msg.imageUrl && (
+                                                                    <div className="relative max-w-sm rounded-xl overflow-hidden border border-gray-200 dark:border-cyan-500/30 shadow-md">
+                                                                        <img src={msg.imageUrl} alt="Uploaded content" className="w-full h-auto object-cover max-h-[300px]" />
+                                                                    </div>
+                                                                )}
+                                                                <p className="whitespace-pre-wrap leading-relaxed text-sm">
+                                                                    {msg.content}
+                                                                </p>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="flex flex-col gap-4">
+                                                                {msg.imageUrl && (
+                                                                    <div className="relative group/img rounded-2xl overflow-hidden border border-gray-200 dark:border-cyan-500/30 shadow-2xl animate-in zoom-in-95 duration-500">
+                                                                        <img src={msg.imageUrl} alt="AI Generated" className="w-full h-auto object-cover max-h-[500px]" />
+                                                                        <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover/img:opacity-100 backdrop-blur-[2px]">
+                                                                            <button 
+                                                                                onClick={async () => {
+                                                                                    const downloadPromise = async () => {
+                                                                                        try {
+                                                                                            setFeedbackToast("Downloading Zylron Creation... 📥");
+                                                                                            const res = await fetch(msg.imageUrl);
+                                                                                            if (!res.ok) throw new Error("CORS or Network Error");
+                                                                                            const blob = await res.blob();
+                                                                                            const url = window.URL.createObjectURL(blob);
+                                                                                            const link = document.createElement('a');
+                                                                                            link.href = url;
+                                                                                            link.download = `zylron-ai-${Date.now()}.jpg`;
+                                                                                            link.click();
+                                                                                            window.URL.revokeObjectURL(url);
+                                                                                            setFeedbackToast("Download Complete! ✨");
+                                                                                        } catch (e) {
+                                                                                            console.warn("Direct download failed, falling back to new tab...");
+                                                                                            window.open(msg.imageUrl, '_blank');
+                                                                                            setFeedbackToast("Opening in new tab for manual save... 🚀");
+                                                                                        }
+                                                                                        setTimeout(() => setFeedbackToast(null), 3000);
+                                                                                    };
+                                                                                    downloadPromise();
+                                                                                }}
+                                                                                className="p-4 bg-white/10 hover:bg-emerald-600 backdrop-blur-xl rounded-full text-white transition-all transform hover:scale-110 shadow-2xl border border-white/20"
+                                                                            >
+                                                                                <Download size={28} />
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                                <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed prose-p:leading-relaxed prose-a:text-emerald-600 dark:prose-a:text-cyan-400 drop-shadow-none dark:drop-shadow-sm">
+                                                                    <TypewriterMarkdown text={msg.content} animate={msg.animate} />
                                                                 </div>
-                                                            )}
-                                                            <p className="whitespace-pre-wrap leading-relaxed">
-                                                                {msg.content}
-                                                            </p>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="flex flex-col gap-4">
-                                                            {msg.imageUrl && (
-                                                                <div className="relative group/img rounded-2xl overflow-hidden border border-gray-200 dark:border-cyan-500/30 shadow-2xl animate-in zoom-in-95 duration-500">
-                                                                    <img src={msg.imageUrl} alt="AI Generated" className="w-full h-auto object-cover max-h-[500px]" />
-                                                                    <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover/img:opacity-100 backdrop-blur-[2px]">
-                                                                        <button 
-                                                                            onClick={async () => {
-                                                                                const downloadPromise = async () => {
-                                                                                    try {
-                                                                                        setFeedbackToast("Downloading Zylron Creation... 📥");
-                                                                                        const res = await fetch(msg.imageUrl);
-                                                                                        if (!res.ok) throw new Error("CORS or Network Error");
-                                                                                        const blob = await res.blob();
-                                                                                        const url = window.URL.createObjectURL(blob);
-                                                                                        const link = document.createElement('a');
-                                                                                        link.href = url;
-                                                                                        link.download = `zylron-ai-${Date.now()}.jpg`;
-                                                                                        link.click();
-                                                                                        window.URL.revokeObjectURL(url);
-                                                                                        setFeedbackToast("Download Complete! ✨");
-                                                                                    } catch (e) {
-                                                                                        console.warn("Direct download failed, falling back to new tab...");
-                                                                                        window.open(msg.imageUrl, '_blank');
-                                                                                        setFeedbackToast("Opening in new tab for manual save... 🚀");
-                                                                                    }
-                                                                                    setTimeout(() => setFeedbackToast(null), 3000);
-                                                                                };
-                                                                                downloadPromise();
-                                                                            }}
-                                                                            className="p-4 bg-white/10 hover:bg-emerald-600 backdrop-blur-xl rounded-full text-white transition-all transform hover:scale-110 shadow-2xl border border-white/20"
-                                                                        >
-                                                                            <Download size={28} />
+                                                            </div>
+                                                        )}
+
+                                                        {!msg.isSystem && msg.type !== 'error' && (
+                                                            <div className="mt-4 pt-3 border-t border-gray-200/50 dark:border-gray-700/50 flex flex-col gap-3 opacity-40 group-hover/msg:opacity-100 transition-all">
+                                                                <div className="flex items-center justify-between">
+                                                                    <div className="flex items-center gap-1">
+                                                                        {msg.type === 'ai' && msg.agentUsed && (
+                                                                            <div className="mr-2 flex items-center gap-1.5 px-2 py-1 rounded-md bg-cyan-500/10 text-cyan-500 text-[9px] font-black uppercase tracking-tighter border border-cyan-500/20 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.2)]">
+                                                                                <Activity size={10} /> Neural Agent
+                                                                            </div>
+                                                                        )}
+                                                                        <button type="button" onClick={() => handleFeedback(idx, 'up')} className={`p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all ${msg.feedback === 'up' ? 'text-emerald-500 dark:text-cyan-400' : 'text-gray-400'}`}>
+                                                                            <ThumbsUp size={14} fill={msg.feedback === 'up' ? 'currentColor' : 'none'} />
+                                                                        </button>
+                                                                        <button type="button" onClick={() => handleFeedback(idx, 'down')} className={`p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all ${msg.feedback === 'down' ? 'text-red-500 dark:text-red-400' : 'text-gray-400'}`}>
+                                                                            <ThumbsDown size={14} fill={msg.feedback === 'down' ? 'currentColor' : 'none'} />
                                                                         </button>
                                                                     </div>
-                                                                </div>
-                                                            )}
-                                                            <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed prose-p:leading-relaxed prose-a:text-emerald-600 dark:prose-a:text-cyan-400 drop-shadow-none dark:drop-shadow-sm">
-                                                                <TypewriterMarkdown text={msg.content} animate={msg.animate} />
-                                                            </div>
-                                                        </div>
-                                                    )}
-
-                                                    {!msg.isSystem && msg.type !== 'error' && (
-                                                        <div className="mt-4 pt-3 border-t border-gray-200/50 dark:border-gray-700/50 flex flex-col gap-3 opacity-40 group-hover/msg:opacity-100 transition-all">
-                                                            <div className="flex items-center justify-between">
-                                                                <div className="flex items-center gap-1">
-                                                                    {msg.type === 'ai' && msg.agentUsed && (
-                                                                        <div className="mr-2 flex items-center gap-1.5 px-2 py-1 rounded-md bg-cyan-500/10 text-cyan-500 text-[9px] font-black uppercase tracking-tighter border border-cyan-500/20 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.2)]">
-                                                                            <Activity size={10} /> Neural Agent
-                                                                        </div>
-                                                                    )}
-                                                                    <button type="button" onClick={() => handleFeedback(idx, 'up')} className={`p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all ${msg.feedback === 'up' ? 'text-emerald-500 dark:text-cyan-400' : 'text-gray-400'}`}>
-                                                                        <ThumbsUp size={14} fill={msg.feedback === 'up' ? 'currentColor' : 'none'} />
-                                                                    </button>
-                                                                    <button type="button" onClick={() => handleFeedback(idx, 'down')} className={`p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all ${msg.feedback === 'down' ? 'text-red-500 dark:text-red-400' : 'text-gray-400'}`}>
-                                                                        <ThumbsDown size={14} fill={msg.feedback === 'down' ? 'currentColor' : 'none'} />
-                                                                    </button>
-                                                                </div>
-                                                                <div className="flex items-center gap-2">
-                                                                    <button type="button" onClick={() => copyToClipboard(msg.content, idx)} className={`flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-all text-[10px] font-bold uppercase tracking-wider ${copiedIndex === idx ? 'text-emerald-500 dark:text-cyan-400' : 'text-gray-400'}`}>
-                                                                        {copiedIndex === idx ? <Check size={12} /> : <Copy size={12} />} {copiedIndex === idx ? 'Copied' : 'Copy'}
-                                                                    </button>
-                                                                    <button type="button" onClick={() => speakText(msg.content, idx)} className={`p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-all ${isSpeakingIndex === idx ? 'text-emerald-500 dark:text-cyan-400 animate-pulse' : 'text-gray-400'}`}>
-                                                                        {isSpeakingIndex === idx ? <VolumeX size={14} /> : <Volume2 size={14} />}
-                                                                    </button>
-
-                                                                    {msg.type === 'ai' && !msg.isSystem && (
-                                                                        <button onClick={() => setPinnedMessages(prev => prev.find(p => p === msg) ? prev.filter(p => p !== msg) : [...prev, msg])} className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all" title="Pin message">
-                                                                            {pinnedMessages.includes(msg) ? <PinOff size={14} className="text-amber-500" /> : <Pin size={14} className="text-gray-400" />}
+                                                                    <div className="flex items-center gap-2">
+                                                                        <button type="button" onClick={() => copyToClipboard(msg.content, idx)} className={`flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-black/10 dark:hover:bg-white/10 transition-all text-[10px] font-bold uppercase tracking-wider ${copiedIndex === idx ? 'text-emerald-500 dark:text-cyan-400' : 'text-gray-400'}`}>
+                                                                            {copiedIndex === idx ? <Check size={12} /> : <Copy size={12} />} {copiedIndex === idx ? 'Copied' : 'Copy'}
                                                                         </button>
-                                                                    )}
+                                                                        <button type="button" onClick={() => speakText(msg.content, idx)} className={`p-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-all ${isSpeakingIndex === idx ? 'text-emerald-500 dark:text-cyan-400 animate-pulse' : 'text-gray-400'}`}>
+                                                                            {isSpeakingIndex === idx ? <VolumeX size={14} /> : <Volume2 size={14} />}
+                                                                        </button>
 
-                                                                    {msg.timestamp && (
-                                                                        <span className="text-[9px] text-gray-400 dark:text-gray-600 font-bold ml-2 self-center">{msg.timestamp}</span>
-                                                                    )}
+                                                                        {msg.type === 'ai' && !msg.isSystem && (
+                                                                            <button onClick={() => setPinnedMessages(prev => prev.find(p => p === msg) ? prev.filter(p => p !== msg) : [...prev, msg])} className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-all" title="Pin message">
+                                                                                {pinnedMessages.includes(msg) ? <PinOff size={14} className="text-amber-500" /> : <Pin size={14} className="text-gray-400" />}
+                                                                            </button>
+                                                                        )}
+
+                                                                        {msg.timestamp && (
+                                                                            <span className="text-[9px] text-gray-400 dark:text-gray-600 font-bold ml-2 self-center">{msg.timestamp}</span>
+                                                                        )}
+                                                                    </div>
                                                                 </div>
+
+                                                                {/* 🚀 ACTION CLUSTER (Clean Dedicated Row) */}
+                                                                {msg.previewUrl && (
+                                                                    <div className="flex gap-3 mt-1 animate-in fade-in slide-in-from-bottom-3 duration-500 w-full">
+                                                                        <button 
+                                                                            type="button" 
+                                                                            onClick={() => window.open(`${msg.previewUrl}&t=${Date.now()}`, '_blank')} 
+                                                                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-700 text-white text-[10px] font-black uppercase tracking-widest hover:scale-110 transition-all shadow-[0_0_20px_rgba(6,182,212,0.4)] active:scale-95"
+                                                                        >
+                                                                            <Globe size={14} /> Launch Live Preview
+                                                                        </button>
+                                                                        <button 
+                                                                            type="button" 
+                                                                            onClick={() => {
+                                                                                setPreviewCode(`<iframe src="${msg.previewUrl}&t=${Date.now()}" style="width:100%;height:100%;border:none;background:#0f172a;" title="Neural Sandbox"></iframe>`);
+                                                                                setIsCodeModalOpen(true);
+                                                                            }} 
+                                                                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 border border-cyan-500/30 text-cyan-400 text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-[0_0_15px_rgba(6,182,212,0.1)] active:scale-95"
+                                                                        >
+                                                                            <Monitor size={14} /> Neural Sandbox
+                                                                        </button>
+                                                                    </div>
+                                                                )}
                                                             </div>
-
-                                                            {/* 🚀 ACTION CLUSTER (Clean Dedicated Row) */}
-                                                            {msg.previewUrl && (
-                                                                <div className="flex gap-3 mt-1 animate-in fade-in slide-in-from-bottom-3 duration-500 w-full">
-                                                                    <button 
-                                                                        type="button" 
-                                                                        onClick={() => window.open(`${msg.previewUrl}&t=${Date.now()}`, '_blank')} 
-                                                                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-700 text-white text-[10px] font-black uppercase tracking-widest hover:scale-110 transition-all shadow-[0_0_20px_rgba(6,182,212,0.4)] active:scale-95"
-                                                                    >
-                                                                        <Globe size={14} /> Launch Live Preview
-                                                                    </button>
-                                                                    <button 
-                                                                        type="button" 
-                                                                        onClick={() => {
-                                                                            setPreviewCode(`<iframe src="${msg.previewUrl}&t=${Date.now()}" style="width:100%;height:100%;border:none;background:#0f172a;" title="Neural Sandbox"></iframe>`);
-                                                                            setIsCodeModalOpen(true);
-                                                                        }} 
-                                                                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 border border-cyan-500/30 text-cyan-400 text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-[0_0_15px_rgba(6,182,212,0.1)] active:scale-95"
-                                                                    >
-                                                                        <Monitor size={14} /> Neural Sandbox
-                                                                    </button>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    )}
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         )}
