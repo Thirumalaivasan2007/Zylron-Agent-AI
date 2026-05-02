@@ -1020,9 +1020,7 @@ const Dashboard = () => {
             return [newSessionData, ...prev];
         });
 
-        // Save to Firebase
         // Save to Firebase (Real Logic: Pass workspace context)
-        const workspaceId = activeWorkspace === 'team' ? 'zylron_team_shared' : user.uid;
         await saveChatToCloud(user.uid, sessionId, chatTitle, updatedMessages, existingSession?.pinned || false, existingSession?.folder, workspaceId);
     };
 
