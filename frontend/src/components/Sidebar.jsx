@@ -1,4 +1,4 @@
-import { Plus, Trash2, MessageSquare, Zap, Search, RefreshCw, Share2, FileDown, HelpCircle, Download, Pin, Users } from 'lucide-react';
+import { Plus, Trash2, MessageSquare, Zap, Search, RefreshCw, Share2, FileDown, HelpCircle, Download, Pin, Users, ShieldCheck, Sparkles } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const Sidebar = ({ history, loadSession, handleNewChat, currentSessionId, deleteSession, togglePinSession, updateSessionFolder, credits = 0, xp = 0, onShare, onExportPDF, onExportMD, onTour, onAdmin, isPro = false, onUpgrade, activeWorkspace = 'personal', onWorkspaceChange }) => {
@@ -22,8 +22,24 @@ const Sidebar = ({ history, loadSession, handleNewChat, currentSessionId, delete
     });
 
     return (
-        <div className="w-72 h-full bg-white/80 dark:bg-[#0f172a]/90 backdrop-blur-xl border-r border-gray-200/50 dark:border-cyan-900/30 flex flex-col transition-colors duration-300">
-            <div className="p-4 pt-6 space-y-4">
+        <div className={`w-72 h-full bg-white/80 dark:bg-[#0f172a]/90 backdrop-blur-xl border-r border-gray-200/50 dark:border-cyan-900/30 flex flex-col transition-all duration-500 ${activeWorkspace === 'team' ? 'ring-1 ring-indigo-500/20' : ''}`}>
+            
+            {/* SaaS Workspace Branding */}
+            <div className="p-6 pb-2 flex items-center gap-4">
+                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all shadow-lg ${activeWorkspace === 'team' ? 'bg-indigo-600 shadow-indigo-500/20' : 'bg-emerald-500 shadow-emerald-500/20'}`}>
+                    {activeWorkspace === 'team' ? <ShieldCheck size={20} className="text-white" /> : <Zap size={20} className="text-white" />}
+                </div>
+                <div>
+                    <h3 className="text-sm font-black text-gray-900 dark:text-white tracking-tighter leading-none">
+                        {activeWorkspace === 'team' ? 'Zylron Enterprise' : 'Personal Cloud'}
+                    </h3>
+                    <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                        {activeWorkspace === 'team' ? 'Team Workspace' : 'Private Instance'}
+                    </p>
+                </div>
+            </div>
+
+            <div className="p-4 pt-4 space-y-4">
                 {/* Workspace Switcher */}
                 <div className="flex bg-gray-100 dark:bg-black/50 p-1 rounded-2xl border border-gray-200 dark:border-gray-800">
                     <button 
@@ -95,9 +111,32 @@ const Sidebar = ({ history, loadSession, handleNewChat, currentSessionId, delete
                 </div>
             </div>
 
+            {/* Step 2 Real Logic: Team Assets Repository */}
+            {activeWorkspace === 'team' && (
+                <div className="px-4 mb-4">
+                    <div className="p-4 bg-indigo-500/5 border border-indigo-500/20 rounded-2xl">
+                        <div className="flex items-center gap-2 mb-3">
+                            <ShieldCheck size={12} className="text-indigo-500" />
+                            <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Team Assets</span>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-[9px] text-gray-500 hover:text-indigo-500 cursor-pointer transition-colors bg-white/50 dark:bg-white/5 p-2 rounded-lg">
+                                <span className="truncate max-w-[150px]">📁 system_architecture.pdf</span>
+                                <Download size={10} />
+                            </div>
+                            <div className="flex items-center justify-between text-[9px] text-gray-500 hover:text-indigo-500 cursor-pointer transition-colors bg-white/50 dark:bg-white/5 p-2 rounded-lg">
+                                <span className="truncate max-w-[150px]">📁 branding_guide.zip</span>
+                                <Download size={10} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="flex-1 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-800 scrollbar-track-transparent">
-                <div className="text-[10px] font-bold tracking-[0.2em] text-gray-400 dark:text-gray-500 uppercase mb-4 px-6">
-                    Cloud History
+                <div className="text-[10px] font-bold tracking-[0.2em] text-gray-400 dark:text-gray-500 uppercase mb-4 px-6 flex items-center gap-2">
+                    {activeWorkspace === 'team' ? <Users size={12} /> : <MessageSquare size={12} />}
+                    {activeWorkspace === 'team' ? 'Team Project History' : 'Private Cloud History'}
                 </div>
 
                 <div className="space-y-1 px-3">

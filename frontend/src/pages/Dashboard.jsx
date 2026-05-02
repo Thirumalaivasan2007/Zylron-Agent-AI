@@ -1600,12 +1600,12 @@ const Dashboard = () => {
     return (
         <React.Fragment>
             <div 
-                className="flex h-screen overflow-hidden bg-white dark:bg-black text-black dark:text-white font-sans selection:bg-emerald-200 dark:selection:bg-cyan-500/30 transition-colors duration-300"
-            style={{ 
-                '--persona-color': persona === 'standard' ? '#10b981' : persona === 'code_master' ? '#3b82f6' : '#f59e0b',
-                '--persona-glow': personaColors[persona].glow
-            }}
-        >
+                className={`flex h-screen ${theme === 'dark' ? 'bg-[#0a0f1d] text-white' : 'bg-gray-50 text-gray-900'} font-sans overflow-hidden transition-colors duration-500`}
+                style={{ 
+                    '--persona-color': activeWorkspace === 'team' ? '#818cf8' : (persona === 'standard' ? '#10b981' : persona === 'code_master' ? '#3b82f6' : '#f59e0b'),
+                    '--persona-glow': activeWorkspace === 'team' ? 'rgba(129, 140, 248, 0.4)' : personaColors[persona].glow
+                }}
+            >
             
             {/* Fixed Overlay Sidebar */}
             <div className={`fixed z-40 inset-y-0 left-0 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition duration-300 ease-in-out shadow-2xl`}>
@@ -1687,12 +1687,32 @@ const Dashboard = () => {
                             
                             <div className="flex flex-col ml-1">
                                 <span className="text-sm sm:text-lg font-black tracking-tighter bg-gradient-to-r from-emerald-500 via-cyan-400 to-blue-500 bg-clip-text text-transparent leading-none">
-                                    Zylron AI
+                                    Zylron AI {activeWorkspace === 'team' && <span className="ml-2 text-[8px] bg-indigo-500 text-white px-1.5 py-0.5 rounded-full align-middle font-black animate-pulse">TEAM</span>}
                                 </span>
                                 <span className="text-[6px] sm:text-[7px] uppercase tracking-[0.2em] font-bold text-gray-500 dark:text-cyan-500/40 mt-0.5">
-                                    Neural AI OS
+                                    {activeWorkspace === 'team' ? 'Collaborative Intelligence Node' : 'Neural AI OS'}
                                 </span>
                             </div>
+                            
+                            {/* Team Presence Bar (Real SaaS Logic) */}
+                            {activeWorkspace === 'team' && (
+                                <div className="hidden lg:flex items-center gap-1.5 ml-6 pl-6 border-l border-gray-200 dark:border-gray-800">
+                                    <div className="flex -space-x-2">
+                                        {['Thiru', 'Zylron', 'Dev'].map((m, i) => (
+                                            <div key={i} className="w-6 h-6 rounded-full border-2 border-white dark:border-gray-900 bg-gray-200 dark:bg-gray-800 flex items-center justify-center overflow-hidden hover:scale-110 transition-transform cursor-pointer shadow-sm">
+                                                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${m}`} alt={m} />
+                                            </div>
+                                        ))}
+                                        <div className="w-6 h-6 rounded-full border-2 border-white dark:border-gray-900 bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[8px] font-black text-gray-400">
+                                            +4
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <div className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse"></div>
+                                        <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">Active</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 
