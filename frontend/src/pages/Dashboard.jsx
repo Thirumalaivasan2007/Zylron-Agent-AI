@@ -2476,7 +2476,7 @@ const Dashboard = () => {
             {/* Scroll to Bottom Button */}
             {showScrollButton && (
                 <button
-                    onClick={scrollToBottom}
+                    onClick={() => scrollToBottom()}
                     className="fixed bottom-24 right-4 sm:bottom-32 sm:right-6 z-30 p-3.5 rounded-full bg-emerald-600 dark:bg-cyan-600 text-white shadow-2xl hover:scale-110 active:scale-95 transition-all animate-bounce border-2 border-white/20"
                 >
                     <ChevronDown size={24} className="animate-pulse" />
