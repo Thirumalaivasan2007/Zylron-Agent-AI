@@ -3,7 +3,7 @@ import { db } from '../config/firebase';
 
 const CHATS_COLLECTION = 'chats';
 
-export const saveChatToCloud = async (userId, sessionId, chatTitle, messages, pinned = false, folder) => {
+export const saveChatToCloud = async (userId, sessionId, chatTitle, messages, pinned = false, folder, workspaceId) => {
     if (!userId) return;
     try {
         const chatRef = doc(db, CHATS_COLLECTION, sessionId);
@@ -14,6 +14,7 @@ export const saveChatToCloud = async (userId, sessionId, chatTitle, messages, pi
             message: chatTitle,
             messages: messages,
             pinned,
+            workspaceId: workspaceId || userId, // Real Logic: Default to personal UID
             updatedAt: serverTimestamp()
         };
 
@@ -45,14 +46,14 @@ export const saveFeedbackToCloud = async (sessionId, messages) => {
     }
 };
 
-export const fetchCloudChats = async (userId) => {
+export const fetchCloudChats = async (userId, workspaceId) => {
     if (!userId) return [];
     try {
+        // Real Logic: Filter by workspaceId to separate Personal from Team
         const q = query(
             collection(db, CHATS_COLLECTION), 
-            where("userId", "==", userId)
-            // Note: To use orderBy with where, Firebase requires a composite index.
-            // For now, we will sort them on the client side to prevent index errors for the user.
+            where("workspaceId", "==", workspaceId || userId),
+            orderBy("updatedAt", "desc")
         );
         const querySnapshot = await getDocs(q);
         const chats = [];
@@ -60,15 +61,18 @@ export const fetchCloudChats = async (userId) => {
             chats.push(doc.data());
         });
         
-        // Sort descending by time
-        return chats.sort((a, b) => {
-            const timeA = a.updatedAt?.toMillis ? a.updatedAt.toMillis() : 0;
-            const timeB = b.updatedAt?.toMillis ? b.updatedAt.toMillis() : 0;
-            return timeB - timeA;
-        });
+        return chats;
     } catch (error) {
         console.error("Error fetching chats from cloud:", error);
-        return [];
+        // Fallback if index isn't created yet
+        const qFallback = query(
+            collection(db, CHATS_COLLECTION), 
+            where("workspaceId", "==", workspaceId || userId)
+        );
+        const snapFallback = await getDocs(qFallback);
+        const chatsFallback = [];
+        snapFallback.forEach((doc) => chatsFallback.push(doc.data()));
+        return chatsFallback.sort((a, b) => (b.updatedAt?.toMillis() || 0) - (a.updatedAt?.toMillis() || 0));
     }
 };
 
