@@ -1042,9 +1042,7 @@ const Dashboard = () => {
         URL.revokeObjectURL(url);
     };
 
-    const scrollToBottom = (behavior = 'smooth') => {
-        messagesEndRef.current?.scrollIntoView({ behavior, block: 'end' });
-    };
+
 
     // Scroll Monitoring
     useEffect(() => {
@@ -1464,12 +1462,33 @@ const Dashboard = () => {
         setTimeout(() => setFeedbackToast(null), 2000);
     };
 
-    const updateSessionFolder = (sessionId, folder) => {
+    const updateSessionFolder = async (sessionId, folder) => {
+        const session = history.find(s => s.sessionId === sessionId);
+        if (!session) return;
+
         setHistory(prev => prev.map(chat => 
             chat.sessionId === sessionId ? { ...chat, folder: folder } : chat
         ));
         setFeedbackToast(`📁 Moved to ${folder}!`);
+        
+        // Persist the folder change to Firebase Cloud
+        try {
+            await saveChatToCloud(user.uid, sessionId, session.message, session.messages, session.pinned || false, folder);
+        } catch (err) {
+            console.error("Cloud folder update failed:", err);
+        }
+        
         setTimeout(() => setFeedbackToast(null), 2000);
+    };
+
+    // Robust Scroll-to-Bottom Logic for Dynamic Content
+    const scrollToBottom = (behavior = 'smooth') => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior, block: 'end' });
+        } else if (scrollContainerRef.current) {
+            // Fallback for manual scroll calculation
+            scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+        }
     };
 
     // Feature B2: Keyboard Shortcuts
