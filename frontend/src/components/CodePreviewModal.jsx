@@ -16,38 +16,45 @@ const CodePreviewModal = ({ isOpen, onClose, code: initialCode }) => {
     const isFullHtml = trimmedCode.toLowerCase().startsWith('<!doctype') || trimmedCode.toLowerCase().startsWith('<html');
     const isIframe = trimmedCode.toLowerCase().startsWith('<iframe');
 
-    const srcDoc = isFullHtml || isIframe ? trimmedCode : `
+    // FORCE WRAPPER: Even if it's full HTML or an iframe, we wrap it to ensure 
+    // the parent document (srcDoc) has a 100% height body with a dark background.
+    // This prevents the "white block" issue where a nested iframe collapses.
+    const srcDoc = `
         <!DOCTYPE html>
-        <html style="height: 100%; margin: 0; padding: 0;">
+        <html style="height: 100%; margin: 0; padding: 0; background: #000;">
             <head>
                 <script src="https://cdn.tailwindcss.com"></script>
                 <style>
-                    body { 
-                        font-family: 'Inter', sans-serif; 
-                        background: #020617; 
-                        color: #f8fafc; 
-                        padding: 0; 
-                        margin: 0; 
+                    html, body { 
                         height: 100%; 
+                        margin: 0; 
+                        padding: 0; 
+                        background: #000; 
+                        overflow: hidden;
                         display: flex;
                         flex-direction: column;
                     }
-                    #root { flex: 1; display: flex; flex-direction: column; }
+                    #zylron-root { 
+                        flex: 1; 
+                        display: flex; 
+                        flex-direction: column;
+                        height: 100%;
+                        width: 100%;
+                    }
+                    /* Ensure nested iframes fill the container */
+                    #zylron-root > iframe {
+                        width: 100% !important;
+                        height: 100% !important;
+                        flex: 1;
+                    }
                 </style>
             </head>
             <body>
-                <div id="root">${trimmedCode}</div>
+                <div id="zylron-root">${trimmedCode}</div>
                 <script>
                     window.onerror = function(msg, url, line) {
                         const div = document.createElement('div');
-                        div.style.color = '#ef4444';
-                        div.style.padding = '20px';
-                        div.style.background = 'rgba(239, 68, 68, 0.1)';
-                        div.style.border = '1px solid rgba(239, 68, 68, 0.2)';
-                        div.style.margin = '20px';
-                        div.style.borderRadius = '12px';
-                        div.style.fontSize = '12px';
-                        div.style.fontFamily = 'monospace';
+                        div.style.cssText = 'color: #ef4444; padding: 20px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); margin: 20px; border-radius: 12px; font-size: 12px; font-family: monospace; position: fixed; z-index: 9999;';
                         div.innerText = 'Zylron Runtime Error: ' + msg + ' (Line ' + line + ')';
                         document.body.prepend(div);
                     }
@@ -58,11 +65,17 @@ const CodePreviewModal = ({ isOpen, onClose, code: initialCode }) => {
 
     return (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/95 backdrop-blur-xl" onClick={onClose}></div>
+            <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" onClick={onClose} style={{ backgroundColor: 'rgba(0,0,0,0.95)' }}></div>
 
-            <div className="relative w-full max-w-7xl h-[92vh] bg-[#020617] border border-cyan-500/30 rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col animate-in zoom-in-95 duration-500">
-                {/* Header: Premium Glassmorphism - FORCED DARK */}
-                <div className="p-6 border-b border-gray-800/50 flex justify-between items-center bg-slate-950/50 backdrop-blur-xl">
+            <div 
+                className="relative w-full max-w-7xl h-[92vh] border border-cyan-500/30 rounded-[2.5rem] shadow-[0_0_150px_rgba(0,0,0,1)] overflow-hidden flex flex-col animate-in zoom-in-95 duration-500"
+                style={{ backgroundColor: '#020617' }}
+            >
+                {/* Header: Premium Glassmorphism - HARD CODED DARK */}
+                <div 
+                    className="p-6 border-b border-gray-800/50 flex justify-between items-center backdrop-blur-xl"
+                    style={{ backgroundColor: 'rgba(2, 6, 23, 0.8)' }}
+                >
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl text-white shadow-lg shadow-cyan-500/20">
                             <Play size={20} className="fill-current" />
@@ -84,11 +97,14 @@ const CodePreviewModal = ({ isOpen, onClose, code: initialCode }) => {
                     </div>
                 </div>
 
-                <div className="flex-1 flex overflow-hidden bg-black">
+                <div className="flex-1 flex overflow-hidden" style={{ backgroundColor: '#000' }}>
                     {/* Editor Panel: Darker, more focused */}
                     {isEditMode && (
-                        <div className="w-[450px] border-r border-gray-800/50 flex flex-col bg-slate-950/80 backdrop-blur-md">
-                            <div className="p-4 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-800/50 bg-black/20">Source Matrix</div>
+                        <div 
+                            className="w-[450px] border-r border-gray-800/50 flex flex-col backdrop-blur-md"
+                            style={{ backgroundColor: 'rgba(2, 6, 23, 0.9)' }}
+                        >
+                            <div className="p-4 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-800/50" style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}>Source Matrix</div>
                             <textarea 
                                 value={code}
                                 onChange={(e) => setCode(e.target.value)}
@@ -98,13 +114,13 @@ const CodePreviewModal = ({ isOpen, onClose, code: initialCode }) => {
                         </div>
                     )}
 
-                    {/* Preview Panel: Full viewport focus - HARD BLACK */}
-                    <div className="flex-1 relative bg-black overflow-hidden">
+                    {/* Preview Panel: Full viewport focus - ABSOLUTE BLACK */}
+                    <div className="flex-1 relative overflow-hidden" style={{ backgroundColor: '#000' }}>
                         <iframe 
                             title="Zylron Live Preview"
                             srcDoc={srcDoc}
-                            className="w-full h-full border-none bg-black"
-                            style={{ background: '#000' }}
+                            className="w-full h-full border-none"
+                            style={{ background: '#000', display: 'block' }}
                             sandbox="allow-scripts"
                         />
                     </div>
