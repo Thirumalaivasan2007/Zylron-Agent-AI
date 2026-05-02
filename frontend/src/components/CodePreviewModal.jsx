@@ -58,24 +58,24 @@ const CodePreviewModal = ({ isOpen, onClose, code: initialCode }) => {
 
     return (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={onClose}></div>
+            <div className="absolute inset-0 bg-black/95 backdrop-blur-xl" onClick={onClose}></div>
 
-            <div className="relative w-full max-w-7xl h-[92vh] bg-white dark:bg-[#020617] border border-gray-200 dark:border-cyan-500/30 rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col animate-in zoom-in-95 duration-500">
-                {/* Header: Premium Glassmorphism */}
-                <div className="p-6 border-b border-gray-100 dark:border-gray-800/50 flex justify-between items-center bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl">
+            <div className="relative w-full max-w-7xl h-[92vh] bg-[#020617] border border-cyan-500/30 rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col animate-in zoom-in-95 duration-500">
+                {/* Header: Premium Glassmorphism - FORCED DARK */}
+                <div className="p-6 border-b border-gray-800/50 flex justify-between items-center bg-slate-950/50 backdrop-blur-xl">
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl text-white shadow-lg shadow-cyan-500/20">
                             <Play size={20} className="fill-current" />
                         </div>
                         <div>
-                            <h2 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight leading-none">Zylron Hyper-Sandbox</h2>
+                            <h2 className="text-lg font-black text-white uppercase tracking-tight leading-none">Zylron Hyper-Sandbox</h2>
                             <p className="text-[10px] text-cyan-500 font-black uppercase tracking-[0.2em] mt-1 opacity-90">Live Interactive Execution Environment</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
                         <button 
                             onClick={() => setIsEditMode(!isEditMode)}
-                            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 ${isEditMode ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 'bg-gray-100 dark:bg-slate-900 text-gray-600 dark:text-slate-400 hover:bg-amber-500/10'}`}
+                            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 ${isEditMode ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 'bg-slate-900 text-slate-400 hover:bg-amber-500/10'}`}
                         >
                             {isEditMode ? <RefreshCw size={14} className="animate-spin-slow" /> : <Edit3 size={14} />}
                             {isEditMode ? 'Running Live...' : 'Edit Code'}
@@ -84,33 +84,34 @@ const CodePreviewModal = ({ isOpen, onClose, code: initialCode }) => {
                     </div>
                 </div>
 
-                <div className="flex-1 flex overflow-hidden bg-slate-50 dark:bg-black">
+                <div className="flex-1 flex overflow-hidden bg-black">
                     {/* Editor Panel: Darker, more focused */}
                     {isEditMode && (
-                        <div className="w-[450px] border-r border-gray-100 dark:border-gray-800/50 flex flex-col bg-white dark:bg-slate-950/80 backdrop-blur-md">
-                            <div className="p-4 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 dark:border-gray-800/50 bg-gray-50/50 dark:bg-black/20">Source Matrix</div>
+                        <div className="w-[450px] border-r border-gray-800/50 flex flex-col bg-slate-950/80 backdrop-blur-md">
+                            <div className="p-4 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-800/50 bg-black/20">Source Matrix</div>
                             <textarea 
                                 value={code}
                                 onChange={(e) => setCode(e.target.value)}
-                                className="flex-1 w-full bg-transparent p-6 text-sm font-mono text-gray-700 dark:text-cyan-100/80 focus:outline-none resize-none spellcheck-false leading-relaxed"
+                                className="flex-1 w-full bg-transparent p-6 text-sm font-mono text-cyan-100/80 focus:outline-none resize-none spellcheck-false leading-relaxed"
                                 spellCheck="false"
                             />
                         </div>
                     )}
 
-                    {/* Preview Panel: Full viewport focus - REMOVED BG-WHITE */}
+                    {/* Preview Panel: Full viewport focus - HARD BLACK */}
                     <div className="flex-1 relative bg-black overflow-hidden">
                         <iframe 
                             title="Zylron Live Preview"
                             srcDoc={srcDoc}
                             className="w-full h-full border-none bg-black"
+                            style={{ background: '#000' }}
                             sandbox="allow-scripts"
                         />
                     </div>
                 </div>
 
-                {/* Footer: Diagnostic Bar */}
-                <div className="px-6 py-4 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-t border-gray-100 dark:border-gray-800/50 flex justify-between items-center">
+                {/* Footer: Diagnostic Bar - FORCED DARK */}
+                <div className="px-6 py-4 bg-slate-950/80 backdrop-blur-xl border-t border-gray-800/50 flex justify-between items-center">
                     <div className="flex items-center gap-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                         <span className="flex items-center gap-2 text-emerald-500"><Code size={12} /> Runtime: V8 Secure</span>
                         <span className="flex items-center gap-2 text-cyan-400"><RefreshCw size={12} /> Hot Reload Active</span>
