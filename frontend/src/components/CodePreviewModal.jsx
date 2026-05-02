@@ -11,29 +11,43 @@ const CodePreviewModal = ({ isOpen, onClose, code: initialCode }) => {
 
     if (!isOpen) return null;
 
-    // Smart Sandbox Logic: If the code is a full HTML document, use it as is.
-    // Otherwise, wrap it in our premium responsive boilerplate.
-    const isFullHtml = code.trim().toLowerCase().startsWith('<!doctype') || code.trim().toLowerCase().startsWith('<html');
-    const isIframe = code.trim().toLowerCase().startsWith('<iframe');
+    // Smart Sandbox Logic: Improved detection and full-screen dark boilerplate
+    const trimmedCode = code.trim();
+    const isFullHtml = trimmedCode.toLowerCase().startsWith('<!doctype') || trimmedCode.toLowerCase().startsWith('<html');
+    const isIframe = trimmedCode.toLowerCase().startsWith('<iframe');
 
-    const srcDoc = isFullHtml || isIframe ? code : `
+    const srcDoc = isFullHtml || isIframe ? trimmedCode : `
         <!DOCTYPE html>
-        <html>
+        <html style="height: 100%; margin: 0; padding: 0;">
             <head>
                 <script src="https://cdn.tailwindcss.com"></script>
                 <style>
-                    body { font-family: sans-serif; background: #fff; color: #333; padding: 20px; margin: 0; }
+                    body { 
+                        font-family: 'Inter', sans-serif; 
+                        background: #020617; 
+                        color: #f8fafc; 
+                        padding: 0; 
+                        margin: 0; 
+                        height: 100%; 
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    #root { flex: 1; display: flex; flex-direction: column; }
                 </style>
             </head>
             <body>
-                <div id="root">${code}</div>
+                <div id="root">${trimmedCode}</div>
                 <script>
                     window.onerror = function(msg, url, line) {
                         const div = document.createElement('div');
-                        div.style.color = 'red';
-                        div.style.padding = '10px';
-                        div.style.background = '#ffebee';
+                        div.style.color = '#ef4444';
+                        div.style.padding = '20px';
+                        div.style.background = 'rgba(239, 68, 68, 0.1)';
+                        div.style.border = '1px solid rgba(239, 68, 68, 0.2)';
+                        div.style.margin = '20px';
+                        div.style.borderRadius = '12px';
                         div.style.fontSize = '12px';
+                        div.style.fontFamily = 'monospace';
                         div.innerText = 'Zylron Runtime Error: ' + msg + ' (Line ' + line + ')';
                         document.body.prepend(div);
                     }
@@ -44,13 +58,13 @@ const CodePreviewModal = ({ isOpen, onClose, code: initialCode }) => {
 
     return (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose}></div>
+            <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={onClose}></div>
 
-            <div className="relative w-full max-w-7xl h-[92vh] bg-white dark:bg-[#020617] border border-gray-200 dark:border-cyan-500/30 rounded-[2.5rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col animate-in zoom-in-95 duration-500">
+            <div className="relative w-full max-w-7xl h-[92vh] bg-white dark:bg-[#020617] border border-gray-200 dark:border-cyan-500/30 rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col animate-in zoom-in-95 duration-500">
                 {/* Header: Premium Glassmorphism */}
                 <div className="p-6 border-b border-gray-100 dark:border-gray-800/50 flex justify-between items-center bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-gradient-to-br from-emerald-400 to-cyan-600 rounded-2xl text-white shadow-lg shadow-cyan-500/20">
+                        <div className="p-3 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl text-white shadow-lg shadow-cyan-500/20">
                             <Play size={20} className="fill-current" />
                         </div>
                         <div>
@@ -73,7 +87,7 @@ const CodePreviewModal = ({ isOpen, onClose, code: initialCode }) => {
                 <div className="flex-1 flex overflow-hidden bg-slate-50 dark:bg-black">
                     {/* Editor Panel: Darker, more focused */}
                     {isEditMode && (
-                        <div className="w-[400px] border-r border-gray-100 dark:border-gray-800/50 flex flex-col bg-white dark:bg-slate-950/80 backdrop-blur-md">
+                        <div className="w-[450px] border-r border-gray-100 dark:border-gray-800/50 flex flex-col bg-white dark:bg-slate-950/80 backdrop-blur-md">
                             <div className="p-4 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 dark:border-gray-800/50 bg-gray-50/50 dark:bg-black/20">Source Matrix</div>
                             <textarea 
                                 value={code}
@@ -84,12 +98,12 @@ const CodePreviewModal = ({ isOpen, onClose, code: initialCode }) => {
                         </div>
                     )}
 
-                    {/* Preview Panel: Full viewport focus */}
-                    <div className="flex-1 relative bg-white overflow-hidden">
+                    {/* Preview Panel: Full viewport focus - REMOVED BG-WHITE */}
+                    <div className="flex-1 relative bg-black overflow-hidden">
                         <iframe 
                             title="Zylron Live Preview"
                             srcDoc={srcDoc}
-                            className="w-full h-full border-none bg-white"
+                            className="w-full h-full border-none bg-black"
                             sandbox="allow-scripts"
                         />
                     </div>
