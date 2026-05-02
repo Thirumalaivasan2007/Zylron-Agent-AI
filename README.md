@@ -24,45 +24,51 @@
 
 ## 📖 Introduction
 
-Zylron AI 3.0 is a state-of-the-art Agentic AI ecosystem that transcends traditional chat interfaces. Built on a foundation of high-performance React and powered by Google's Gemini 2.0 Flash-Lite architecture, Zylron provides a seamless, "JARVIS-like" experience across web and desktop platforms. 
+Zylron AI 3.0 is a state-of-the-art Agentic AI ecosystem that transcends traditional chat interfaces. Built on a foundation of high-performance React and powered by Google's Gemini 2.0 Flash-Lite architecture, Zylron provides a seamless, **JARVIS-inspired desktop experience**.
 
 ## 🏆 Project Evolution & Milestones
 
 ### **Phase 1: Foundation & Backend Stabilization**
-- **Database Infrastructure**: Hardened MongoDB connectivity by correcting replica set configurations, eliminating "Server selection timed out" errors.
-- **Backend Optimization**: Stabilized the legacy Node.js backend to support seamless data flow for the first generation of Zylron AI.
+- **Infrastructure**: Hardened MongoDB connectivity and legacy backend stability.
 
-### **Phase 2: Client-Side Revolution (Phase 2 Implementation)**
-- **Architecture Migration**: Shifted to a client-side-only architecture, eliminating backend dependencies for AI reasoning.
-- **Gemini Integration**: Directly integrated Google Gemini API into the frontend, enabling ultra-low latency responses.
-- **Document Intelligence**: Implemented intelligent PDF text extraction and analysis tools directly in the browser.
-- **Environment Hardening**: Resolved top-level await compatibility and environment-specific configuration issues.
+### **Phase 2: Client-Side Revolution**
+- **Architecture**: Migration to a client-side-only architecture via direct Gemini API integration.
+- **Document Intelligence**: Intelligent PDF text extraction and real-time analysis.
 
 ### **Phase 3: Neural UI & Sandbox Optimization**
-- **Neural Sandbox**: Developed a hardened iframe encapsulation system for secure, consistent dark-mode rendering of AI-generated content.
-- **Workspace Intelligence**: Implemented persistent workspace filter states (Work, Research, Personal) using localized state synchronization.
-- **Interaction Refinement**: Optimized the "sticky-bottom" scroll persistence logic and implemented a robust, secure-context clipboard system with fallback.
+- **Neural Sandbox**: Secure iframe encapsulation for code rendering.
+- **Persistence**: Localized state synchronization for workspace filters.
 
-### **Phase 4: Hyper-Stabilization & Cloud Sync (Current)**
-- **Structural Integrity**: Resolved complex JSX regressions in the 2.0/3.0 transition, ensuring a perfect 155/155 tag balance.
-- **Folder Persistence**: Fixed critical synchronization bugs in the Firestore layer to ensure chat categories persist across sessions.
-- **Refined UX**: Fixed the "Scroll-to-Bottom" button visibility and event-handling bugs for a 100% reliable navigation experience.
+### **Phase 4: Hyper-Stabilization & Cloud Sync**
+- **Cloud Recovery**: Fixed Firestore synchronization for chat categories.
+- **Scroll Engine**: Optimized for dynamic `scrollHeight` tracking.
+
+### **Phase 5: Advanced HCI & Neural HCI (Zylron Sense)**
+- **Zylron Sense**: Integrated **TensorFlow Handpose** for touchless, gesture-based UI navigation.
+- **Voice Intelligence**: Implemented JARVIS-style speech-to-text interaction.
+- **Neural Tour**: Interactive onboarding system powered by `react-joyride`.
+
+### **Phase 6: Desktop Mastery & SaaS Foundation**
+- **JARVIS Desktop Experience**: Full optimization for standalone desktop usage (Electron/PWA).
+- **Neural XP (Hyper-Gen Feature 13)**: Gamified experience tracking with Neural XP and Level systems.
+- **SaaS Readiness**: Daily Credit usage trackers and token monitoring dashboard.
+- **Data Analytics**: Real-time AI usage visualization via `recharts`.
 
 ---
 
 ## 🔥 Key Intelligence Features
 
 ### 🧠 Multi-Persona Neural Network
-- **Dynamic Personas**: Switch between 6+ neural modes (Standard, Code Master, Research Pro, Creative Suite, etc.).
-- **Custom System Instructions**: Build and persist unique AI personalities.
+- **Dynamic Modes**: 6+ neural personas (Standard, Code Master, Research Pro, etc.).
+- **Customization**: Build and persist unique AI personalities.
 
 ### 👁️ Multi-Modal Omni-Vision
-- **OCR & Scene Analysis**: Analyze images instantly for text and visual content.
-- **Web Search Integration**: Real-time data retrieval via Zylron Search Engine.
+- **Omni-Vision**: OCR, scene analysis, and visual reasoning.
+- **Live Search**: Real-time web data via Zylron Search Engine.
 
 ### 🧪 The Neural Sandbox
-- **Live Code Preview**: Render HTML/CSS/JS snippets instantly.
-- **Voice & Gesture HCI**: Integrated speech-to-text and gesture-based interaction.
+- **Live Preview**: Instant rendering of HTML/CSS/JS.
+- **Hyper-Gen HCI**: Gesture and voice-driven controls.
 
 ---
 
@@ -75,13 +81,7 @@ Zylron AI 3.0 is a state-of-the-art Agentic AI ecosystem that transcends traditi
    cd Zylron-Agent-AI/frontend
    npm install
    ```
-2. **Environment Configuration**
-   Add your keys to `.env`:
-   ```env
-   VITE_GEMINI_API_KEY=...
-   VITE_FIREBASE_API_KEY=...
-   ```
-3. **Launch**
+2. **Launch**
    ```bash
    npm run dev
    ```
@@ -89,4 +89,4 @@ Zylron AI 3.0 is a state-of-the-art Agentic AI ecosystem that transcends traditi
 ---
 
 ## 🤝 Credits
-Developed with passion by **Thirumalaivasan** | © 2026 Zylron AI Ecosystem.
+Developed by **Thirumalaivasan** | © 2026 Zylron AI Ecosystem.
