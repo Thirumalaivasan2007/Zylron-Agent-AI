@@ -1,7 +1,7 @@
 # 🌌 Zylron AI 3.0: The Ultimate Agentic Ecosystem
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/Thirumalaivasan2007/Zylron-Agent-AI/main/frontend/src/assets/zylron_logo.png" alt="Zylron Logo" width="120" height="120" />
+  <img src="https://raw.githubusercontent.com/Thirumalaivasan2007/Zylron-Agent-AI/main/frontend/src/logo.png" alt="Zylron Logo" width="120" height="120" />
   <h1>Zylron AI 3.0</h1>
   <p><strong>Next-Generation Agentic AI Ecosystem — JARVIS Desktop Integration | DevOps CI/CD | Omni-Vision</strong></p>
 
