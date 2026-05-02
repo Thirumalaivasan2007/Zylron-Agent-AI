@@ -1000,11 +1000,13 @@ const Dashboard = () => {
 
 
         // Optimistic UI Update
+        const workspaceId = activeWorkspace === 'team' ? 'zylron_team_shared' : user.uid;
         const newSessionData = {
             sessionId,
             message: chatTitle,
             messages: updatedMessages,
             userId: user.uid,
+            workspaceId,
             createdAt: existingSession ? existingSession.createdAt : new Date().toISOString()
         };
         
