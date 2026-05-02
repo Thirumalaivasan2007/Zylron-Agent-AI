@@ -3,7 +3,7 @@ import { db } from '../config/firebase';
 
 const CHATS_COLLECTION = 'chats';
 
-export const saveChatToCloud = async (userId, sessionId, chatTitle, messages, pinned = false) => {
+export const saveChatToCloud = async (userId, sessionId, chatTitle, messages, pinned = false, folder) => {
     if (!userId) return;
     try {
         const chatRef = doc(db, CHATS_COLLECTION, sessionId);
@@ -16,6 +16,10 @@ export const saveChatToCloud = async (userId, sessionId, chatTitle, messages, pi
             pinned,
             updatedAt: serverTimestamp()
         };
+
+        if (folder !== undefined) {
+            payload.folder = folder;
+        }
 
         // Only set createdAt for the first time
         if (messages.length <= 2) {

@@ -1045,21 +1045,13 @@ const Dashboard = () => {
 
 
     // Scroll Monitoring
-    useEffect(() => {
-        const handleScroll = () => {
-            if (scrollContainerRef.current) {
-                const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
-                const isNearBottom = scrollHeight - scrollTop - clientHeight < 200;
-                setShowScrollButton(!isNearBottom && messages.length > 3);
-            }
-        };
-
-        const container = scrollContainerRef.current;
-        if (container) {
-            container.addEventListener('scroll', handleScroll);
+    const handleScroll = () => {
+        if (scrollContainerRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
+            const isNearBottom = scrollHeight - scrollTop - clientHeight < 200;
+            setShowScrollButton(!isNearBottom && scrollHeight > clientHeight);
         }
-        return () => container?.removeEventListener('scroll', handleScroll);
-    }, [messages]);
+    };
 
     // Feature 3: Prompt Engineering Studio — optimize prompt with AI
     const optimizePrompt = async () => {
@@ -1833,7 +1825,7 @@ const Dashboard = () => {
                 </div>
                 
                 {/* Main Chat Area */}
-                <div {...getRootProps()} ref={scrollContainerRef} className="flex-1 overflow-y-auto p-2 sm:p-4 md:p-8 relative scroll-smooth">
+                <div {...getRootProps()} ref={scrollContainerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto p-2 sm:p-4 md:p-8 relative scroll-smooth">
                     <input {...getInputProps()} />
 
                     {/* Chat Search Bar */}
