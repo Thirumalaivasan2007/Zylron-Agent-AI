@@ -1160,12 +1160,6 @@ const Dashboard = () => {
             return;
         }
 
-        // Step 3: Neural Deep Recall
-        let recallContext = "";
-        if (isMemoryEnabled) {
-            recallContext = await deepRecall(userMsg);
-        }
-
         const userMsg = input;
         const sessionId = currentSessionId || Date.now().toString();
         if (!currentSessionId) setCurrentSessionId(sessionId);
@@ -1182,11 +1176,23 @@ const Dashboard = () => {
         setInput('');
         setActiveImage(null);
 
+        // Step 3: Neural Deep Recall
+        let recallContext = "";
+        if (isMemoryEnabled) {
+            recallContext = await deepRecall(userMsg);
+        }
+
+        const workspaceContext = activeWorkspace === 'team' 
+            ? " [CONTEXT: This is a shared TEAM workspace. Everyone in the team can see this. Act as a Team Lead AI Consultant.]" 
+            : " [CONTEXT: This is a PRIVATE personal workspace.]";
+
         const updatedMessages = [...messages, { 
             type: 'user', 
             content: userMsg, 
             imageUrl: imageUrlForUI || null,
             animate: false,
+            workspace: activeWorkspace,
+            memberName: activeWorkspace === 'team' ? (user.displayName || 'Team Member') : 'You',
             timestamp: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
         }];
         setFollowUpSuggestions([]);
@@ -1210,8 +1216,11 @@ const Dashboard = () => {
         // Prep history for Gemini (only text parts to save tokens)
         const geminiHistory = updatedMessages.slice(0, -1).filter(m => m.type !== 'error').map(m => ({
             role: m.type === 'user' ? 'user' : 'model',
-            parts: [{ text: m.content || "Attached an image." }]
+            parts: [{ text: (m.content || "Attached an image.") + (m.workspace === 'team' ? ` [Team Member: ${m.memberName}]` : "") }]
         })).slice(-10);
+
+        // SYSTEM PROMPT INJECTION
+        const fullPrompt = `${SYSTEM_PROMPT}${workspaceContext}${memoryContext}\n\nCurrent User Query: ${userMsg}`;
 
         // Phase 3: Image Generation Detection (Robust Neural Trigger)
         const imageTriggers = ['generate image', 'create image', 'draw ', 'show me a picture', 'generate a picture', 'create an image'];
