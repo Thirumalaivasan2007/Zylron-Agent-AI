@@ -111,9 +111,46 @@ const Sidebar = ({ history, loadSession, handleNewChat, currentSessionId, delete
                 </div>
             </div>
 
-            {/* Step 2 Real Logic: Team Assets Repository */}
+            {/* Step 2 Real Logic: Team Assets & Players */}
             {activeWorkspace === 'team' && (
-                <div className="px-4 mb-4">
+                <div className="px-4 space-y-4 mb-4">
+                    {/* Team Players Directory */}
+                    <div className="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                                <Users size={12} className="text-emerald-500" />
+                                <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Team Players</span>
+                            </div>
+                            <button className="p-1 hover:bg-emerald-500/10 rounded-lg transition-all">
+                                <Plus size={10} className="text-emerald-500" />
+                            </button>
+                        </div>
+                        <div className="space-y-3">
+                            {[
+                                { name: 'Thirumalai', role: 'Lead', status: 'online' },
+                                { name: 'Zylron AI', role: 'Agent', status: 'online' },
+                                { name: 'Dev Admin', role: 'DevOps', status: 'away' }
+                            ].map((player, i) => (
+                                <div key={i} className="flex items-center justify-between group cursor-pointer">
+                                    <div className="flex items-center gap-2">
+                                        <div className="relative">
+                                            <div className="w-6 h-6 rounded-lg bg-gray-200 dark:bg-gray-800 overflow-hidden shadow-sm">
+                                                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${player.name}`} alt={player.name} />
+                                            </div>
+                                            <div className={`absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 rounded-full border border-white dark:border-gray-950 ${player.status === 'online' ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-[9px] font-bold text-gray-700 dark:text-gray-300 group-hover:text-emerald-500 transition-colors">{player.name}</span>
+                                            <span className="text-[7px] text-gray-400 uppercase tracking-widest">{player.role}</span>
+                                        </div>
+                                    </div>
+                                    <Zap size={8} className="text-gray-300 opacity-0 group-hover:opacity-100 transition-all" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Team Assets */}
                     <div className="p-4 bg-indigo-500/5 border border-indigo-500/20 rounded-2xl">
                         <div className="flex items-center gap-2 mb-3">
                             <ShieldCheck size={12} className="text-indigo-500" />
@@ -122,10 +159,6 @@ const Sidebar = ({ history, loadSession, handleNewChat, currentSessionId, delete
                         <div className="space-y-2">
                             <div className="flex items-center justify-between text-[9px] text-gray-500 hover:text-indigo-500 cursor-pointer transition-colors bg-white/50 dark:bg-white/5 p-2 rounded-lg">
                                 <span className="truncate max-w-[150px]">📁 system_architecture.pdf</span>
-                                <Download size={10} />
-                            </div>
-                            <div className="flex items-center justify-between text-[9px] text-gray-500 hover:text-indigo-500 cursor-pointer transition-colors bg-white/50 dark:bg-white/5 p-2 rounded-lg">
-                                <span className="truncate max-w-[150px]">📁 branding_guide.zip</span>
                                 <Download size={10} />
                             </div>
                         </div>

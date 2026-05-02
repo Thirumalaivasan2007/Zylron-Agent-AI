@@ -2112,13 +2112,29 @@ const Dashboard = () => {
                                                 <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent"></div>
                                             </div>
                                         ) : (
-                                            <div className={`w-full max-w-[95%] md:max-w-[85%] lg:max-w-5xl xl:max-w-6xl flex gap-4 ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                                                <div 
-                                                    className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 overflow-hidden ${msg.type === 'user' ? 'bg-emerald-100 dark:bg-black border border-emerald-300 dark:border-cyan-500/80 shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.4)]' : msg.type === 'error' ? 'bg-red-100 dark:bg-red-600' : 'bg-gray-100 dark:bg-black border border-gray-300 dark:border-cyan-500/30 shadow-sm dark:shadow-[0_0_10px_rgba(0,255,255,0.2)]'}`}
-                                                    style={msg.type === 'ai' ? { borderColor: 'var(--persona-color)', boxShadow: `0 0 15px var(--persona-glow)` } : {}}
-                                                >
-                                                    {msg.type === 'user' ? <User size={20} className="text-emerald-700 dark:text-cyan-400 dark:drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]" /> : <img src={ZylronLogo} alt="Zylron AI" className="h-8 w-8 rounded-full object-cover" />}
-                                                </div>
+                                                <div className={`flex flex-col ${msg.type === 'user' ? 'items-end' : 'items-start'}`}>
+                                                    {msg.memberName && (
+                                                        <div className={`flex items-center gap-1.5 mb-1 ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                                                            <span className="text-[9px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest opacity-60 group-hover/msg:opacity-100 transition-opacity">
+                                                                {msg.memberName}
+                                                            </span>
+                                                            <div className={`w-1 h-1 rounded-full ${msg.type === 'user' ? 'bg-emerald-500' : 'bg-indigo-500'}`}></div>
+                                                        </div>
+                                                    )}
+                                                    
+                                                    <div className={`flex gap-4 ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                                                        <div 
+                                                            className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 overflow-hidden ${msg.type === 'user' ? 'bg-emerald-100 dark:bg-black border border-emerald-300 dark:border-cyan-500/80 shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.4)]' : msg.type === 'error' ? 'bg-red-100 dark:bg-red-600' : 'bg-gray-100 dark:bg-black border border-gray-300 dark:border-cyan-500/30 shadow-sm dark:shadow-[0_0_10px_rgba(0,255,255,0.2)]'}`}
+                                                            style={msg.type === 'ai' ? { borderColor: 'var(--persona-color)', boxShadow: `0 0 15px var(--persona-glow)` } : {}}
+                                                        >
+                                                            {msg.type === 'user' ? (
+                                                                msg.workspace === 'team' ? (
+                                                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${msg.memberName}`} alt={msg.memberName} className="h-full w-full object-cover" />
+                                                                ) : (
+                                                                    <User size={20} className="text-emerald-700 dark:text-cyan-400 dark:drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]" />
+                                                                )
+                                                            ) : <img src={ZylronLogo} alt="Zylron AI" className="h-8 w-8 rounded-full object-cover" />}
+                                                        </div>
 
                                                 <div className={`px-5 py-4 rounded-3xl overflow-hidden transition-all duration-300 relative group/msg ${msg.type === 'user'
                                                     ? 'bg-emerald-50 dark:bg-black border border-gray-200 dark:border-cyan-500/60 text-black dark:text-white rounded-tr-sm shadow-sm dark:shadow-[0_0_15px_rgba(0,255,255,0.2)]'
