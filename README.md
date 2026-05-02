@@ -1,84 +1,69 @@
+# 🌌 Zylron AI 3.0: The Ultimate Agentic Ecosystem
+
 <div align="center">
-  <img src="./frontend/public/logo.png" alt="Zylron AI Logo" width="120" height="120" />
+  <img src="https://raw.githubusercontent.com/Thirumalaivasan2007/Zylron-Agent-AI/main/frontend/src/assets/zylron_logo.png" alt="Zylron Logo" width="120" height="120" />
   <h1>Zylron AI 3.0</h1>
-  <p><strong>Premium Agentic AI Ecosystem — JARVIS Desktop Integration | DevOps CI/CD | Omni-Vision</strong></p>
+  <p><strong>Next-Generation Agentic AI Ecosystem — JARVIS Desktop Integration | DevOps CI/CD | Omni-Vision</strong></p>
 
   <p>
-    <a href="https://zylron-agent-ai.vercel.app">🚀 Live Web App</a> • 
-    <a href="https://zylron-agent-ai.onrender.com">⚙️ Backend Link</a>
+    <a href="https://zylron-agent-ai.vercel.app">🌐 Live Web App</a> • 
+    <a href="https://github.com/Thirumalaivasan2007/Zylron-Agent-AI/releases">📦 Download Desktop</a>
   </p>
 
   <p>
     <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
-    <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
-    <img src="https://img.shields.io/badge/Electron-47848F?style=for-the-badge&logo=electron&logoColor=white" alt="Electron" />
     <img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" alt="Vite" />
-    <img src="https://img.shields.io/badge/Gemini_1.5_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini" />
+    <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
+    <img src="https://img.shields.io/badge/Tailwind-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind" />
+    <img src="https://img.shields.io/badge/Gemini_2.0-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini" />
   </p>
 </div>
 
 ---
 
-## 🌟 Overview
-**Zylron 3.0** is an elite, autonomous AI ecosystem that transitions from a simple chatbot to a full-scale digital companion. Designed as a "JARVIS" for developers, it features deep OS-level integration, real-time screen awareness via **Omni-Vision**, and an automated **DevOps Swarm** that monitors your GitHub commits to review and fix code in real-time.
+## 🚀 Vision
+Zylron AI 3.0 is not just a chatbot; it's a hyper-intelligent, agentic environment designed to bridge the gap between AI reasoning and real-world execution. Ported and stabilized from the 2.0 foundation, version 3.0 introduces a high-performance "Neural Sandbox" design, hardened security, and multi-modal intelligence.
 
----
+## ✨ Key Features
 
-## ✨ Elite 3.0 Features
+### 🧠 Advanced Agentic Intelligence
+- **Multi-Modal Vision**: Analyze images, code snippets, and live document data in real-time.
+- **Dynamic AI Personas**: Switch between 6+ neural modes (Standard, Code Master, Research, etc.) with persistent state.
+- **Neural Sandbox**: A secure, high-performance environment for running diagnostics and complex AI tasks.
 
-- 🖥️ **Always-On JARVIS (Desktop)**
-  - Native Electron integration with **Wake-word ("Hey Zylron")** activation.
-  - **Omni-Vision:** Real-time screen awareness that allows the AI to see what you are working on and provide contextual help.
-  
-- 🤖 **DevOps Swarm (CI/CD)**
-  - Automated GitHub Webhook integration. Zylron acts as your senior reviewer, analyzing pushes and opening Pull Requests for bug fixes automatically.
+### 🎨 Premium UI/UX (Neural Design System)
+- **Glassmorphism & Micro-animations**: A stunning dark-mode interface with vibrant cyan and emerald accents.
+- **Interactive Sidebar**: Advanced session management with persistent workspace filters (Work, Research, Personal).
+- **Sticky-Bottom Flow**: Optimized chat experience with "smart scroll" and instant-response rendering.
 
-- 🎙️ **Voice Persona Engine**
-  - Advanced Text-to-Speech (TTS) with Indian-English optimization and persona-specific speech patterns (Pitch/Rate adjustments).
+### 🛡️ Enterprise-Grade Foundation
+- **Firebase Cloud Sync**: Real-time history persistence across all sessions.
+- **Robust Persistence**: Every category change, pinned chat, and persona preference is saved to the cloud.
+- **Cross-Platform**: Full support for Web and JARVIS-inspired Desktop integration.
 
-- 🧠 **Multimodal Intelligence**
-  - **Vision & Document RAG:** Drag-and-drop PDFs or images for deep analysis.
-  - **Long-term Memory:** Persistent context tracking using Pinecone Vector Database.
+## 🛠️ Technical Improvements (v3.0 Stabilization)
+- **Hardened Structural Integrity**: Resolved recursive JSX nesting and balanced complex `<div>` hierarchies to 155/155.
+- **Cloud Folder Persistence**: Fixed a critical bug where chat categories would reset on refresh by updating the Firestore synchronization layer.
+- **Optimized UI Handlers**: 
+  - **Scroll-to-Bottom**: Implemented a robust `onScroll` listener that detects container height changes rather than message count.
+  - **Secure Clipboard**: Advanced copy-to-clipboard logic with fallback support for legacy and non-secure contexts.
+- **Clean Architecture**: Eliminated redundant block-scoped declarations and optimized state hooks for performance.
 
-- 💻 **Neural Sandbox**
-  - Instant live rendering for HTML/CSS/JS code generated by the AI in a secure isolated environment.
+## 📦 Getting Started
 
----
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Thirumalaivasan2007/Zylron-Agent-AI.git
+   ```
+2. **Install dependencies**
+   ```bash
+   cd Zylron-Agent-AI/frontend
+   npm install
+   ```
+3. **Run the development server**
+   ```bash
+   npm run dev
+   ```
 
-## 🚀 Deployment Links
-
-- **Frontend:** [zylron-agent-ai.vercel.app](https://zylron-agent-ai.vercel.app)
-- **Backend:** [zylron-agent-ai.onrender.com](https://zylron-agent-ai.onrender.com)
-- **Repo:** [Thirumalaivasan2007/Zylron-Agent-AI](https://github.com/Thirumalaivasan2007/Zylron-Agent-AI)
-
----
-
-## 🛠️ Installation
-
-### 1. Web / Backend
-```bash
-# Clone the repository
-git clone https://github.com/Thirumalaivasan2007/Zylron-Agent-AI.git
-
-# Setup Backend
-cd backend && npm install && node server.js
-
-# Setup Frontend
-cd frontend && npm install && npm run dev
-```
-
-### 2. Desktop (JARVIS)
-```bash
-cd desktop
-npm install
-npm start # For development
-npm run build # To generate .exe installer
-```
-
----
-
-<div align="center">
-  <i>Built with passion for the Future of HCI.</i>
-  <br />
-  <b>Created By Thirumalaivasan</b>
-</div>
+## 📜 License
+© 2026 Thirumalaivasan | Zylron AI Ecosystem. All Rights Reserved.
