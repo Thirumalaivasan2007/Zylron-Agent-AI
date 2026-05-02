@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { chatWithGemini, PERSONAS } from '../services/gemini';
 import Sidebar from '../components/Sidebar';
@@ -437,17 +437,66 @@ const Dashboard = () => {
         localStorage.setItem('zylron_widget_note', text);
     };
 
+    const copyToClipboard = (text, index) => {
+        if (!text) return;
+        
+        const performCopy = async () => {
+            try {
+                // Primary: Clipboard API
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    // Fallback: Textarea approach
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-9999px";
+                    textArea.style.top = "0";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand('copy');
+                    textArea.remove();
+                }
+                
+                setCopiedIndex(index);
+                setFeedbackToast("✨ Copied to clipboard!");
+                setTimeout(() => {
+                    setCopiedIndex(null);
+                    setFeedbackToast(null);
+                }, 2000);
+            } catch (err) {
+                console.error('Copy failed:', err);
+                setFeedbackToast("❌ Copy failed. Please select text manually.");
+                setTimeout(() => setFeedbackToast(null), 3000);
+            }
+        };
+        
+        performCopy();
+    };
+
     const messagesEndRef = useRef(null);
     const scrollContainerRef = useRef(null);
     const emojiPickerRef = useRef(null);
     const dropdownRef = useRef(null);
     const personaRef = useRef(null);
 
-    const copyToClipboard = (text, index) => {
-        navigator.clipboard.writeText(text);
-        setCopiedIndex(index);
-        setTimeout(() => setCopiedIndex(null), 2000);
-    };
+    // Optimized Auto-scroll for smoother UX
+    useLayoutEffect(() => {
+        if (messages.length > 0) {
+            const container = scrollContainerRef.current;
+            if (container) {
+                // Use a small timeout to ensure DOM has updated (Typewriter effect compatibility)
+                const scrollTimeout = setTimeout(() => {
+                    messagesEndRef.current?.scrollIntoView({ 
+                        behavior: isLoading ? 'auto' : 'smooth', 
+                        block: 'end' 
+                    });
+                }, 100);
+                return () => clearTimeout(scrollTimeout);
+            }
+        }
+    }, [messages, isLoading]);
 
     const handleFeedback = async (messageIdx, type) => {
         if (!user || !currentSessionId) return;
@@ -862,9 +911,7 @@ const Dashboard = () => {
         }
     }, [user]);
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages, isLoading]);
+
 
     const saveToCloud = async (sessionId, updatedMessages) => {
         if (!user) return;
@@ -995,8 +1042,8 @@ const Dashboard = () => {
         URL.revokeObjectURL(url);
     };
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const scrollToBottom = (behavior = 'smooth') => {
+        messagesEndRef.current?.scrollIntoView({ behavior, block: 'end' });
     };
 
     // Scroll Monitoring

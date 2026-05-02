@@ -1,9 +1,13 @@
 import { Plus, Trash2, MessageSquare, Zap, Search, RefreshCw, Share2, FileDown, HelpCircle, Download, Pin } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Sidebar = ({ history, loadSession, handleNewChat, currentSessionId, deleteSession, togglePinSession, updateSessionFolder, credits = 0, xp = 0, onShare, onExportPDF, onExportMD, onTour, onAdmin }) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [activeFolder, setActiveFolder] = useState('all');
+    const [activeFolder, setActiveFolder] = useState(() => localStorage.getItem('zylron_active_folder') || 'all');
+
+    useEffect(() => {
+        localStorage.setItem('zylron_active_folder', activeFolder);
+    }, [activeFolder]);
     const FOLDERS = [
         { id: 'all', label: 'All Chats', icon: <MessageSquare size={14} /> },
         { id: 'work', label: 'Work', icon: <Zap size={14} /> },
