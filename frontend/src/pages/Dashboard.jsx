@@ -1264,7 +1264,7 @@ const Dashboard = () => {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 120000); // 2-min limit
 
-            let aiResponse = "";
+            let neuralResponse = "";
             let data = {};
 
             try {
@@ -1286,7 +1286,7 @@ const Dashboard = () => {
                 data = await proxyResponse.json();
                 clearTimeout(timeoutId);
                 if (!proxyResponse.ok) throw new Error(data.error || "Neural Proxy Error");
-                aiResponse = data.text;
+                neuralResponse = data.text;
             } catch (proxyError) {
                 clearTimeout(timeoutId);
                 console.warn("Neural Proxy failed, switching to direct link:", proxyError);
@@ -1300,11 +1300,11 @@ const Dashboard = () => {
                         memoryContext + searchContext + chronosContext + langContext + urlContext,
                     activePdf
                 );
-                aiResponse = directResponse;
+                neuralResponse = directResponse;
                 setFeedbackToast("⚠️ Switched to Direct Neural Link (Proxy Offline)");
             }
 
-            if (!aiResponse) throw new Error("Neural Link Interrupted");
+            if (!neuralResponse) throw new Error("Neural Link Interrupted");
 
             if (data.agentUsed) {
                 setIsAgentActive(true);
@@ -1314,13 +1314,13 @@ const Dashboard = () => {
                     setFeedbackToast(""); // Clear toast as well
                 }, 5000);
             }
-
-            const aiResponse = data.text || "⚠️ [SYSTEM ERROR: Neural Link Interrupted]";
+            // Process Neural Response
+            if (!neuralResponse) neuralResponse = "⚠️ [SYSTEM ERROR: Neural Link Interrupted]";
             
             // 🔔 NEURAL NOTIFICATION (Visual) & AUTO-VOICE (Restricted to Schedule)
-            const aiMsg = aiResponse.toUpperCase();
+            const aiMsg = neuralResponse.toUpperCase();
             if (aiMsg.includes("EVENT SCHEDULED")) {
-                const msg = new SpeechSynthesisUtterance(aiResponse.split('.')[0]); 
+                const msg = new SpeechSynthesisUtterance(neuralResponse.split('.')[0]); 
                 msg.pitch = 1.2;
                 msg.rate = 1.1;
                 window.speechSynthesis.speak(msg);
@@ -1339,7 +1339,7 @@ const Dashboard = () => {
 
             const finalMessages = [...updatedMessages, { 
                 type: 'ai', 
-                content: aiResponse, 
+                content: neuralResponse, 
                 animate: true, 
                 timestamp: ts, 
                 agentUsed: data.agentUsed,
@@ -1352,7 +1352,7 @@ const Dashboard = () => {
 
             // ✅ Feature F: Natural Smart Follow-up Suggestions (zero API calls)
             (() => {
-                const r = aiResponse;
+                const r = neuralResponse;
                 const rLow = r.toLowerCase();
                 const q = userMsg?.toLowerCase() || '';
                 const combined = rLow + ' ' + q;
@@ -1499,12 +1499,12 @@ const Dashboard = () => {
 
             // Feature G: Desktop Notification
             if (notificationsEnabled && document.hidden) {
-                new Notification('Zylron AI ⚡', { body: aiResponse.slice(0, 80) + '...', icon: '/logo.png' });
+                new Notification('Zylron AI ⚡', { body: neuralResponse.slice(0, 80) + '...', icon: '/logo.png' });
             }
             
             // Auto-speak if enabled or continuous
             if (isAutoSpeak || isContinuousVoice) {
-                speakText(aiResponse, finalMessages.length - 1);
+                speakText(neuralResponse, finalMessages.length - 1);
             }
 
             // Run cloud sync asynchronously so it doesn't block the UI loading state
