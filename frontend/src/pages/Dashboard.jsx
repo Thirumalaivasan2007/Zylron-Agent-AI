@@ -1245,7 +1245,6 @@ const Dashboard = () => {
                 animate: true 
             }]);
             setIsGeneratingImage(false);
-            setIsLoading(false);
             return;
         }
 
@@ -1328,7 +1327,6 @@ const Dashboard = () => {
             }];
             
             setMessages(finalMessages);
-            setIsLoading(false); 
             setCredits(prev => Math.min(prev + 1, 50));
             setXp(prev => prev + 10);
 
@@ -1492,8 +1490,14 @@ const Dashboard = () => {
             // Run cloud sync asynchronously so it doesn't block the UI loading state
             saveToCloud(sessionId, finalMessages).catch(console.error);
         } catch (error) {
-            setMessages(prev => [...prev, { type: 'error', content: error.message }]);
+            console.error("Neural Engine Error:", error);
+            setMessages(prev => [...prev, { 
+                type: 'error', 
+                content: `⚠️ **Neural Link Failed**: ${error.message}. Please check your connection or Firebase permissions.` 
+            }]);
+        } finally {
             setIsLoading(false);
+            setIsGeneratingImage(false);
         }
     };
 
