@@ -1246,11 +1246,10 @@ const Dashboard = () => {
             }]);
             setIsGeneratingImage(false);
             return;
-            return;
         }
 
         const chronosContext = `\n\n[CHRONOS ENGINE: Current local time is ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} (IST). Use this for real-time awareness.]\n`;
-            const searchContext = isSearchMode ? "\n\n[SEARCH MODE ACTIVE: You have access to real-time web intelligence. Use the most recent facts.]\n" : "";
+        const searchContext = isSearchMode ? "\n\n[SEARCH MODE ACTIVE: You have access to real-time web intelligence. Use the most recent facts.]\n" : "";
             // Feature 10: Global Language Engine
             const langContext = activeLanguage !== 'auto' ? `\n\n[LANGUAGE ENGINE: You MUST respond ENTIRELY in ${activeLanguage}. Do not use any other language.]\n` : "";
             // Feature 14: Zylron Automation — URL context scraping
@@ -1261,30 +1260,51 @@ const Dashboard = () => {
                 urlContext = `\n\n[ZYLRON AUTOMATION: User shared these URLs: ${detectedUrls.join(', ')}. Analyze and reference them in your response.]\n`;
             }
             
-            // Full Agentic Proxy Call
             const proxyUrl = 'https://zylron-agent-ai.onrender.com/api/gemini/proxy';
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 120000); // 2-min limit
 
-            const proxyResponse = await fetch(proxyUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    prompt: userMsg || "Please describe this image.",
-                    history: geminiHistory,
-                    persona: persona,
-                    // ✅ 2.0 approach: persona instruction FIRST, then contexts appended (never empty!)
-                    systemInstruction: (PERSONAS[persona] || PERSONAS.standard) + 
+            let aiResponse = "";
+            let data = {};
+
+            try {
+                const proxyResponse = await fetch(proxyUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: userMsg || "Please describe this image.",
+                        history: geminiHistory,
+                        persona: persona,
+                        systemInstruction: (PERSONAS[persona] || PERSONAS.standard) + 
+                            (pdfContext ? '\n\nCONTEXT FROM DOCUMENT:\n' + pdfContext : '') +
+                            memoryContext + searchContext + chronosContext + langContext + urlContext,
+                        isSearchMode: isSearchMode
+                    }),
+                    signal: controller.signal
+                });
+                
+                data = await proxyResponse.json();
+                clearTimeout(timeoutId);
+                if (!proxyResponse.ok) throw new Error(data.error || "Neural Proxy Error");
+                aiResponse = data.text;
+            } catch (proxyError) {
+                clearTimeout(timeoutId);
+                console.warn("Neural Proxy failed, switching to direct link:", proxyError);
+                // DIRECT FALLBACK (Step 2 Real Logic)
+                const directResponse = await chatWithGemini(
+                    userMsg, 
+                    geminiHistory, 
+                    persona, 
+                    (PERSONAS[persona] || PERSONAS.standard) + 
                         (pdfContext ? '\n\nCONTEXT FROM DOCUMENT:\n' + pdfContext : '') +
                         memoryContext + searchContext + chronosContext + langContext + urlContext,
-                    isSearchMode: isSearchMode
-                }),
-                signal: controller.signal
-            });
-            
-            clearTimeout(timeoutId);
-            const data = await proxyResponse.json();
-            if (!proxyResponse.ok) throw new Error(data.error || "Neural Proxy Error");
+                    activePdf
+                );
+                aiResponse = directResponse;
+                setFeedbackToast("⚠️ Switched to Direct Neural Link (Proxy Offline)");
+            }
+
+            if (!aiResponse) throw new Error("Neural Link Interrupted");
 
             if (data.agentUsed) {
                 setIsAgentActive(true);
