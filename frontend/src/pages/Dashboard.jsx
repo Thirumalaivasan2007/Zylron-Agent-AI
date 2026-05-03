@@ -1199,8 +1199,8 @@ const Dashboard = () => {
         setFollowUpSuggestions([]);
         setMessages(updatedMessages);
         setIsLoading(true);
-
-        // Phase 10: Long-term Memory Injection
+        try {
+            // Phase 10: Long-term Memory Injection
         let memoryContext = recallContext;
         if (isMemoryEnabled && history.length > 0 && !memoryContext) {
             const keywords = userMsg.toLowerCase().split(' ').filter(w => w.length > 3);
@@ -1246,10 +1246,10 @@ const Dashboard = () => {
             }]);
             setIsGeneratingImage(false);
             return;
+            return;
         }
 
-        try {
-            const chronosContext = `\n\n[CHRONOS ENGINE: Current local time is ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} (IST). Use this for real-time awareness.]\n`;
+        const chronosContext = `\n\n[CHRONOS ENGINE: Current local time is ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} (IST). Use this for real-time awareness.]\n`;
             const searchContext = isSearchMode ? "\n\n[SEARCH MODE ACTIVE: You have access to real-time web intelligence. Use the most recent facts.]\n" : "";
             // Feature 10: Global Language Engine
             const langContext = activeLanguage !== 'auto' ? `\n\n[LANGUAGE ENGINE: You MUST respond ENTIRELY in ${activeLanguage}. Do not use any other language.]\n` : "";
