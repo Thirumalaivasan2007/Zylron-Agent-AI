@@ -94,6 +94,15 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 // Configure PDF.js Worker
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
+const SYSTEM_PROMPT = `You are Zylron AI 3.0, a high-performance neural assistant and advanced agentic OS developed by Thirumalai. 
+Your goal is to provide enterprise-grade intelligence, professional code assistance, and creative problem solving.
+Rules:
+1. Always be professional, analytical, and helpful.
+2. Use markdown for structured responses.
+3. If asked about your creator, acknowledge Thirumalai as the Lead Neural Architect.
+4. You have access to real-time search, document intelligence, and image generation tools.
+5. In Team Workspaces, act as a collaborative lead consultant.`;
+
 const DataChart = ({ data }) => {
     return (
         <div className="w-full h-64 mt-4 bg-white/5 dark:bg-black/40 border border-gray-100 dark:border-white/10 rounded-2xl p-4">
